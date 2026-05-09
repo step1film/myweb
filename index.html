@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>A. Rivera — Filmmaker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Film grain overlay -->
+  <canvas id="grain" aria-hidden="true"></canvas>
+
+  <!-- Letterbox bars -->
+  <div class="letterbox top" aria-hidden="true"></div>
+  <div class="letterbox bottom" aria-hidden="true"></div>
+
+  <!-- Navigation -->
+  <nav id="nav">
+    <div class="nav-logo">
+      <span class="logo-mark">A·R</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#films" data-label="Films">Films</a></li>
+      <li><a href="#about" data-label="About">About</a></li>
+      <li><a href="#awards" data-label="Awards">Awards</a></li>
+      <li><a href="#contact" data-label="Contact">Contact</a></li>
+    </ul>
+    <button class="nav-toggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- Hero Section -->
+  <section id="hero">
+    <div class="hero-bg">
+      <div class="hero-vignette"></div>
+      <div class="hero-reel" aria-hidden="true">
+        <div class="reel-strip"></div>
+        <div class="reel-strip"></div>
+      </div>
+    </div>
+    <div class="hero-content">
+      <p class="hero-eyebrow fade-in-up delay-1">Director &nbsp;·&nbsp; Cinematographer &nbsp;·&nbsp; Storyteller</p>
+      <h1 class="hero-title fade-in-up delay-2">
+        <span class="title-line">Alejandro</span>
+        <span class="title-line italic">Rivera</span>
+      </h1>
+      <p class="hero-tagline fade-in-up delay-3">"Every frame is a confession."</p>
+      <a href="#films" class="hero-cta fade-in-up delay-4">
+        <span>View Filmography</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </div>
+    <div class="hero-scroll-hint fade-in-up delay-5" aria-label="Scroll down">
+      <span class="scroll-line"></span>
+      <span class="scroll-label">Scroll</span>
+    </div>
+  </section>
+
+  <!-- Films Section -->
+  <section id="films">
+    <div class="section-header reveal">
+      <span class="section-label">01 — Filmography</span>
+      <h2 class="section-title">Selected Works</h2>
+    </div>
+
+    <div class="films-grid">
+
+      <article class="film-card reveal" data-year="2024">
+        <div class="film-poster">
+          <div class="poster-img" style="--hue:220"></div>
+          <div class="film-overlay">
+            <span class="film-genre">Feature Film</span>
+            <p class="film-synopsis">A haunting portrait of memory and loss set against the vanishing landscapes of Patagonia.</p>
+          </div>
+        </div>
+        <div class="film-info">
+          <span class="film-year">2024</span>
+          <h3 class="film-title">La Última Luz</h3>
+          <span class="film-award">— Sundance Official Selection</span>
+        </div>
+      </article>
+
+      <article class="film-card reveal" data-year="2022">
+        <div class="film-poster">
+          <div class="poster-img" style="--hue:30"></div>
+          <div class="film-overlay">
+            <span class="film-genre">Short Film</span>
+            <p class="film-synopsis">Two strangers share one last night in a city about to be swallowed by the sea.</p>
+          </div>
+        </div>
+        <div class="film-info">
+          <span class="film-year">2022</span>
+          <h3 class="film-title">Before the Tide</h3>
+          <span class="film-award">— Cannes Palme d'Or Nominee</span>
+        </div>
+      </article>
+
+      <article class="film-card reveal" data-year="2021">
+        <div class="film-poster">
+          <div class="poster-img" style="--hue:0"></div>
+          <div class="film-overlay">
+            <span class="film-genre">Documentary</span>
+            <p class="film-synopsis">An intimate look at artisans keeping ancient craft traditions alive in the Andean highlands.</p>
+          </div>
+        </div>
+        <div class="film-info">
+          <span class="film-year">2021</span>
+          <h3 class="film-title">Manos del Tiempo</h3>
+          <span class="film-award">— IDFA Best Documentary</span>
+        </div>
+      </article>
+
+      <article class="film-card reveal" data-year="2019">
+        <div class="film-poster">
+          <div class="poster-img" style="--hue:160"></div>
+          <div class="film-overlay">
+            <span class="film-genre">Feature Film</span>
+            <p class="film-synopsis">A father crosses a continent to find his estranged daughter, only to discover himself along the way.</p>
+          </div>
+        </div>
+        <div class="film-info">
+          <span class="film-year">2019</span>
+          <h3 class="film-title">El Camino Largo</h3>
+          <span class="film-award">— Berlin Silver Bear</span>
+        </div>
+      </article>
+
+      <article class="film-card reveal" data-year="2017">
+        <div class="film-poster">
+          <div class="poster-img" style="--hue:270"></div>
+          <div class="film-overlay">
+            <span class="film-genre">Short Film</span>
+            <p class="film-synopsis">In a remote lighthouse, a keeper discovers signals from a ship that sank thirty years ago.</p>
+          </div>
+        </div>
+        <div class="film-info">
+          <span class="film-year">2017</span>
+          <h3 class="film-title">Señales</h3>
+          <span class="film-award">— Venice Orizzonti Award</span>
+        </div>
+      </article>
+
+      <article class="film-card reveal" data-year="2015">
+        <div class="film-poster">
+          <div class="poster-img" style="--hue:50"></div>
+          <div class="film-overlay">
+            <span class="film-genre">Feature Film</span>
+            <p class="film-synopsis">A silent woman inherits a failing cinema and finds the reels hold the town's darkest secret.</p>
+          </div>
+        </div>
+        <div class="film-info">
+          <span class="film-year">2015</span>
+          <h3 class="film-title">El Proyeccionista</h3>
+          <span class="film-award">— Tribeca Grand Jury Prize</span>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about">
+    <div class="about-inner">
+      <div class="about-visual reveal">
+        <div class="about-portrait">
+          <div class="portrait-frame"></div>
+          <div class="portrait-placeholder">
+            <svg viewBox="0 0 200 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="200" height="260" fill="#1a1410"/>
+              <circle cx="100" cy="95" r="42" fill="#2d2218"/>
+              <ellipse cx="100" cy="210" rx="68" ry="55" fill="#2d2218"/>
+            </svg>
+          </div>
+          <div class="portrait-caption">
+            <span>Behind the lens</span>
+            <span>Buenos Aires, 2024</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="about-text">
+        <div class="section-header reveal">
+          <span class="section-label">02 — About</span>
+          <h2 class="section-title">The Filmmaker</h2>
+        </div>
+        <div class="about-body reveal">
+          <p class="about-lead">
+            Alejandro Rivera is an award-winning Argentine director and cinematographer whose work explores the intersection of memory, identity, and landscape.
+          </p>
+          <p>
+            Born in Buenos Aires and trained at the Centro de Investigación Cinematográfica, Rivera has spent two decades crafting films that live at the border between the personal and the political. His visual language draws from the long tradition of Latin American magical realism, filtered through a rigorous, contemplative lens.
+          </p>
+          <p>
+            His features and shorts have screened at over 80 international festivals, received 14 major awards, and been acquired for distribution in 40+ countries. Rivera also teaches advanced directing at the Universidad del Cine.
+          </p>
+        </div>
+        <div class="about-stats reveal">
+          <div class="stat">
+            <span class="stat-number">20+</span>
+            <span class="stat-label">Years directing</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number">14</span>
+            <span class="stat-label">Major awards</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number">80+</span>
+            <span class="stat-label">Festival screenings</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Awards Section -->
+  <section id="awards">
+    <div class="section-header reveal">
+      <span class="section-label">03 — Recognition</span>
+      <h2 class="section-title">Awards &amp; Honors</h2>
+    </div>
+    <div class="awards-list">
+
+      <div class="award-item reveal">
+        <div class="award-year">2024</div>
+        <div class="award-divider"></div>
+        <div class="award-body">
+          <h3 class="award-title">Sundance Film Festival — Official Selection</h3>
+          <p class="award-film">La Última Luz</p>
+        </div>
+        <div class="award-icon">◈</div>
+      </div>
+
+      <div class="award-item reveal">
+        <div class="award-year">2022</div>
+        <div class="award-divider"></div>
+        <div class="award-body">
+          <h3 class="award-title">Cannes — Palme d'Or Short Film Nominee</h3>
+          <p class="award-film">Before the Tide</p>
+        </div>
+        <div class="award-icon">◈</div>
+      </div>
+
+      <div class="award-item reveal">
+        <div class="award-year">2021</div>
+        <div class="award-divider"></div>
+        <div class="award-body">
+          <h3 class="award-title">IDFA — Best International Documentary</h3>
+          <p class="award-film">Manos del Tiempo</p>
+        </div>
+        <div class="award-icon">◈</div>
+      </div>
+
+      <div class="award-item reveal">
+        <div class="award-year">2019</div>
+        <div class="award-divider"></div>
+        <div class="award-body">
+          <h3 class="award-title">Berlin International Film Festival — Silver Bear</h3>
+          <p class="award-film">El Camino Largo</p>
+        </div>
+        <div class="award-icon">◈</div>
+      </div>
+
+      <div class="award-item reveal">
+        <div class="award-year">2017</div>
+        <div class="award-divider"></div>
+        <div class="award-body">
+          <h3 class="award-title">Venice Film Festival — Orizzonti Award</h3>
+          <p class="award-film">Señales</p>
+        </div>
+        <div class="award-icon">◈</div>
+      </div>
+
+      <div class="award-item reveal">
+        <div class="award-year">2015</div>
+        <div class="award-divider"></div>
+        <div class="award-body">
+          <h3 class="award-title">Tribeca Film Festival — Grand Jury Prize</h3>
+          <p class="award-film">El Proyeccionista</p>
+        </div>
+        <div class="award-icon">◈</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact">
+    <div class="contact-inner">
+      <div class="section-header reveal">
+        <span class="section-label">04 — Contact</span>
+        <h2 class="section-title">Let's Make Something</h2>
+      </div>
+      <p class="contact-lead reveal">
+        Available for feature film projects, commercial direction,<br>
+        and collaborative artistic ventures.
+      </p>
+      <div class="contact-links reveal">
+        <a href="mailto:studio@alejandrorivera.film" class="contact-link">
+          <span class="link-label">Email</span>
+          <span class="link-value">studio@alejandrorivera.film</span>
+        </a>
+        <a href="#" class="contact-link">
+          <span class="link-label">Instagram</span>
+          <span class="link-value">@arivera.film</span>
+        </a>
+        <a href="#" class="contact-link">
+          <span class="link-label">IMDb</span>
+          <span class="link-value">Alejandro Rivera</span>
+        </a>
+        <a href="#" class="contact-link">
+          <span class="link-label">Representation</span>
+          <span class="link-value">WME — Los Angeles</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer id="footer">
+    <div class="footer-inner">
+      <span class="footer-logo">A·R</span>
+      <p class="footer-copy">© 2026 Alejandro Rivera. All rights reserved.</p>
+      <p class="footer-tagline">"Every frame is a confession."</p>
+    </div>
+    <div class="footer-reel" aria-hidden="true">
+      <div class="reel-holes"></div>
+      <div class="reel-frames"></div>
+      <div class="reel-holes"></div>
+    </div>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>
