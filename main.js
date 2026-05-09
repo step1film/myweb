@@ -10,7 +10,6 @@
     const canvas = document.getElementById('grain');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
-    let animId;
 
     function resize() {
       canvas.width  = window.innerWidth;
@@ -22,21 +21,17 @@
       const h = canvas.height;
       const imgData = ctx.createImageData(w, h);
       const buf = imgData.data;
-
       for (let i = 0; i < buf.length; i += 4) {
         const v = (Math.random() * 255) | 0;
-        buf[i]     = v;
-        buf[i + 1] = v;
-        buf[i + 2] = v;
-        buf[i + 3] = 255;
+        buf[i] = buf[i+1] = buf[i+2] = v;
+        buf[i+3] = 255;
       }
-
       ctx.putImageData(imgData, 0, 0);
     }
 
     function tick() {
       drawGrain();
-      animId = requestAnimationFrame(tick);
+      requestAnimationFrame(tick);
     }
 
     resize();
@@ -44,20 +39,53 @@
     window.addEventListener('resize', resize);
   }
 
-  /* ---- Letterbox intro ---- */
-  function initIntro() {
-    document.body.classList.add('intro');
-    requestAnimationFrame(() => {
-      setTimeout(() => {
-        document.body.classList.remove('intro');
-        document.body.classList.add('loaded');
-      }, 800);
-    });
+  /* ---- Film Countdown Loader ---- */
+  function initLoader() {
+    const loader   = document.getElementById('loader');
+    const countEl  = document.getElementById('loaderCount');
+    const progress = document.querySelector('.loader-progress');
+    if (!loader) return;
+
+    const total     = 314; // full circle circumference
+    const steps     = 5;
+    let   current   = steps;
+
+    function setCount(n) {
+      countEl.textContent = n;
+      const offset = total - (total * ((steps - n + 1) / steps));
+      progress.style.strokeDashoffset = Math.max(0, offset);
+    }
+
+    setCount(steps);
+
+    const interval = setInterval(() => {
+      current--;
+      if (current <= 0) {
+        clearInterval(interval);
+        countEl.textContent = '';
+        progress.style.strokeDashoffset = '0';
+        setTimeout(dismissLoader, 300);
+      } else {
+        setCount(current);
+      }
+    }, 900);
+
+    function dismissLoader() {
+      loader.classList.add('done');
+      document.body.classList.remove('loading');
+      document.body.classList.add('intro');
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          document.body.classList.remove('intro');
+          document.body.classList.add('loaded');
+        }, 800);
+      });
+    }
   }
 
-  /* ---- Navigation scroll state ---- */
+  /* ---- Navigation ---- */
   function initNav() {
-    const nav = document.getElementById('nav');
+    const nav    = document.getElementById('nav');
     const toggle = nav.querySelector('.nav-toggle');
 
     function onScroll() {
@@ -80,7 +108,24 @@
     onScroll();
   }
 
-  /* ---- Scroll reveal ---- */
+  /* ---- Active nav highlight ---- */
+  function initActiveNav() {
+    const sectionIds = ['films','showreel','about','press','awards','next','contact'];
+    const sections   = sectionIds.map(id => document.getElementById(id)).filter(Boolean);
+    const links      = document.querySelectorAll('.nav-links a');
+
+    window.addEventListener('scroll', () => {
+      const mid = window.scrollY + window.innerHeight / 2;
+      let activeId = null;
+      sections.forEach(sec => { if (sec.offsetTop <= mid) activeId = sec.id; });
+      links.forEach(a => {
+        const isActive = a.getAttribute('href') === `#${activeId}`;
+        a.style.color = isActive ? 'var(--amber-light)' : '';
+      });
+    }, { passive: true });
+  }
+
+  /* ---- Scroll Reveal ---- */
   function initReveal() {
     const els = document.querySelectorAll('.reveal');
 
@@ -90,12 +135,10 @@
     }
 
     const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry, i) => {
+      entries.forEach(entry => {
         if (entry.isIntersecting) {
-          const delay = entry.target.dataset.delay || 0;
-          setTimeout(() => {
-            entry.target.classList.add('visible');
-          }, delay);
+          const delay = parseInt(entry.target.dataset.delay || 0, 10);
+          setTimeout(() => entry.target.classList.add('visible'), delay);
           observer.unobserve(entry.target);
         }
       });
@@ -109,57 +152,28 @@
 
   /* ---- Film cards stagger ---- */
   function initFilmCards() {
-    const cards = document.querySelectorAll('.film-card');
-    cards.forEach((card, i) => {
+    document.querySelectorAll('.film-card').forEach((card, i) => {
       card.style.transitionDelay = `${i * 0.07}s`;
     });
   }
 
-  /* ---- Award items stagger ---- */
-  function initAwardItems() {
-    const items = document.querySelectorAll('.award-item');
-    items.forEach((item, i) => {
-      item.style.transitionDelay = `${i * 0.08}s`;
-    });
-  }
-
-  /* ---- Smooth parallax on hero background ---- */
-  function initParallax() {
-    const hero = document.getElementById('hero');
-    if (!hero) return;
-    const reel = hero.querySelector('.hero-reel');
-
-    function onScroll() {
-      const scrollY = window.scrollY;
-      if (scrollY > window.innerHeight) return;
-      const factor = scrollY * 0.3;
-      if (reel) reel.style.transform = `translateY(${factor}px)`;
-    }
-
-    window.addEventListener('scroll', onScroll, { passive: true });
-  }
-
-  /* ---- Animated stat counters ---- */
+  /* ---- Stat counters ---- */
   function initCounters() {
-    const stats = document.querySelectorAll('.stat-number');
-
     function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
 
     function animateCounter(el) {
-      const raw   = el.textContent.trim();
-      const num   = parseFloat(raw);
-      const suffix = raw.replace(/[\d.]/g, '');
+      const suffix   = el.nextElementSibling && el.nextElementSibling.classList.contains('stat-suffix')
+                       ? el.nextElementSibling.textContent : '';
+      const target   = parseFloat(el.textContent);
       const duration = 1400;
       let start = null;
 
       function step(ts) {
         if (!start) start = ts;
         const p = Math.min((ts - start) / duration, 1);
-        const current = Math.round(easeOut(p) * num);
-        el.textContent = current + suffix;
+        el.textContent = Math.round(easeOut(p) * target);
         if (p < 1) requestAnimationFrame(step);
       }
-
       requestAnimationFrame(step);
     }
 
@@ -174,123 +188,162 @@
       });
     }, { threshold: 0.5 });
 
-    stats.forEach(el => obs.observe(el));
+    document.querySelectorAll('.stat-number').forEach(el => obs.observe(el));
   }
 
-  /* ---- Custom cursor dot ---- */
+  /* ---- Hero parallax ---- */
+  function initParallax() {
+    const reel = document.querySelector('.hero-reel');
+    if (!reel) return;
+    window.addEventListener('scroll', () => {
+      if (window.scrollY < window.innerHeight) {
+        reel.style.transform = `translateY(${window.scrollY * 0.3}px)`;
+      }
+    }, { passive: true });
+  }
+
+  /* ---- Showreel play action ---- */
+  function initShowreel() {
+    const screen = document.getElementById('showreelScreen');
+    if (!screen) return;
+
+    const hudTime = screen.querySelector('.hud-item');
+    let seconds = 0;
+    let playing = false;
+    let timerId = null;
+
+    function formatTC(s) {
+      const h  = String(Math.floor(s / 3600)).padStart(2, '0');
+      const m  = String(Math.floor((s % 3600) / 60)).padStart(2, '0');
+      const sc = String(s % 60).padStart(2, '0');
+      return `${h}:${m}:${sc}:00`;
+    }
+
+    function startTimecode() {
+      if (timerId) return;
+      timerId = setInterval(() => {
+        seconds++;
+        if (hudTime) hudTime.textContent = formatTC(seconds);
+      }, 1000);
+    }
+
+    screen.addEventListener('click', () => {
+      playing = !playing;
+      if (playing) {
+        startTimecode();
+        screen.querySelector('.play-btn').style.opacity = '0';
+        /* Swap in your actual iframe embed here, e.g.:
+           const iframe = document.createElement('iframe');
+           iframe.src = 'https://player.vimeo.com/video/XXXXXXX?autoplay=1';
+           iframe.allow = 'autoplay; fullscreen';
+           iframe.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;border:0;z-index:10;';
+           screen.appendChild(iframe);
+        */
+      } else {
+        clearInterval(timerId);
+        timerId = null;
+        screen.querySelector('.play-btn').style.opacity = '1';
+      }
+    });
+
+    screen.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); screen.click(); }
+    });
+  }
+
+  /* ---- Press track pause on focus ---- */
+  function initPress() {
+    const track = document.getElementById('pressTrack');
+    if (!track) return;
+
+    track.querySelectorAll('.press-card').forEach(card => {
+      card.addEventListener('mouseenter', () => track.style.animationPlayState = 'paused');
+      card.addEventListener('mouseleave', () => track.style.animationPlayState = 'running');
+    });
+  }
+
+  /* ---- HUD timecode flicker (idle) ---- */
+  function initHudFlicker() {
+    const items = document.querySelectorAll('.hud-item');
+    setInterval(() => {
+      items.forEach(item => {
+        if (Math.random() < 0.1) {
+          const orig = item.style.opacity;
+          item.style.opacity = '0';
+          setTimeout(() => { item.style.opacity = orig || ''; }, 80);
+        }
+      });
+    }, 2000);
+  }
+
+  /* ---- Custom amber cursor ---- */
   function initCursor() {
     if (window.matchMedia('(hover: none)').matches) return;
 
-    const dot = document.createElement('div');
+    const dot = Object.assign(document.createElement('div'), {});
     dot.style.cssText = `
-      position: fixed;
-      width: 8px;
-      height: 8px;
-      background: rgba(200,146,42,0.8);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 9999;
-      transform: translate(-50%, -50%);
-      transition: width 0.3s, height 0.3s, opacity 0.3s, background 0.3s;
-      mix-blend-mode: screen;
+      position:fixed;width:8px;height:8px;background:rgba(200,146,42,0.8);
+      border-radius:50%;pointer-events:none;z-index:9999;
+      transform:translate(-50%,-50%);
+      transition:width .3s,height .3s,opacity .3s;
+      mix-blend-mode:screen;
     `;
     document.body.appendChild(dot);
 
-    const ring = document.createElement('div');
+    const ring = Object.assign(document.createElement('div'), {});
     ring.style.cssText = `
-      position: fixed;
-      width: 36px;
-      height: 36px;
-      border: 1px solid rgba(200,146,42,0.35);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 9998;
-      transform: translate(-50%, -50%);
-      transition: width 0.5s cubic-bezier(0.16,1,0.3,1),
-                  height 0.5s cubic-bezier(0.16,1,0.3,1),
-                  top 0.12s linear, left 0.12s linear;
+      position:fixed;width:36px;height:36px;
+      border:1px solid rgba(200,146,42,0.35);border-radius:50%;
+      pointer-events:none;z-index:9998;transform:translate(-50%,-50%);
+      transition:width .5s cubic-bezier(.16,1,.3,1),height .5s cubic-bezier(.16,1,.3,1),
+                 top .12s linear,left .12s linear;
     `;
     document.body.appendChild(ring);
 
-    let mx = -100, my = -100;
-
     document.addEventListener('mousemove', e => {
-      mx = e.clientX; my = e.clientY;
-      dot.style.left  = mx + 'px';
-      dot.style.top   = my + 'px';
-      ring.style.left = mx + 'px';
-      ring.style.top  = my + 'px';
+      dot.style.left  = ring.style.left = e.clientX + 'px';
+      dot.style.top   = ring.style.top  = e.clientY + 'px';
     });
 
-    document.querySelectorAll('a, button, .film-card').forEach(el => {
+    document.querySelectorAll('a,button,.film-card,.showreel-screen').forEach(el => {
       el.addEventListener('mouseenter', () => {
-        dot.style.width   = '14px';
-        dot.style.height  = '14px';
-        ring.style.width  = '56px';
-        ring.style.height = '56px';
+        dot.style.width = dot.style.height = '14px';
+        ring.style.width = ring.style.height = '56px';
       });
       el.addEventListener('mouseleave', () => {
-        dot.style.width   = '8px';
-        dot.style.height  = '8px';
-        ring.style.width  = '36px';
-        ring.style.height = '36px';
+        dot.style.width = dot.style.height = '8px';
+        ring.style.width = ring.style.height = '36px';
       });
     });
   }
 
-  /* ---- Cinematic page transition (internal links) ---- */
+  /* ---- Page fade-in overlay ---- */
   function initPageFade() {
     const overlay = document.createElement('div');
     overlay.style.cssText = `
-      position: fixed; inset: 0;
-      background: #0a0805;
-      z-index: 2000;
-      opacity: 1;
-      pointer-events: none;
-      transition: opacity 0.8s cubic-bezier(0.16,1,0.3,1);
+      position:fixed;inset:0;background:#0a0805;z-index:2000;
+      opacity:1;pointer-events:none;
+      transition:opacity .8s cubic-bezier(.16,1,.3,1);
     `;
     document.body.appendChild(overlay);
-
-    requestAnimationFrame(() => {
-      setTimeout(() => { overlay.style.opacity = '0'; }, 50);
-    });
-  }
-
-  /* ---- Active nav link highlight on scroll ---- */
-  function initActiveNav() {
-    const sections = ['films','about','awards','contact'].map(id => document.getElementById(id));
-    const links = document.querySelectorAll('.nav-links a');
-
-    function getActive() {
-      const mid = window.scrollY + window.innerHeight / 2;
-      let active = null;
-      sections.forEach(sec => {
-        if (sec && sec.offsetTop <= mid) active = sec.id;
-      });
-      return active;
-    }
-
-    window.addEventListener('scroll', () => {
-      const id = getActive();
-      links.forEach(a => {
-        a.style.color = a.getAttribute('href') === `#${id}` ? 'var(--amber-light)' : '';
-      });
-    }, { passive: true });
+    requestAnimationFrame(() => setTimeout(() => { overlay.style.opacity = '0'; }, 50));
   }
 
   /* ---- Init ---- */
   document.addEventListener('DOMContentLoaded', () => {
     initGrain();
-    initIntro();
+    initLoader();
     initNav();
+    initActiveNav();
     initReveal();
     initFilmCards();
-    initAwardItems();
-    initParallax();
     initCounters();
+    initParallax();
+    initShowreel();
+    initPress();
+    initHudFlicker();
     initCursor();
     initPageFade();
-    initActiveNav();
   });
 
 })();

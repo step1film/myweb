@@ -9,7 +9,27 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
-<body>
+<body class="loading">
+
+  <!-- ===== Film Countdown Loader ===== -->
+  <div id="loader" aria-hidden="true">
+    <div class="loader-sprocket top"></div>
+    <div class="loader-sprocket bottom"></div>
+    <div class="loader-frame">
+      <div class="loader-circle">
+        <svg class="loader-svg" viewBox="0 0 120 120">
+          <circle class="loader-track" cx="60" cy="60" r="50" />
+          <circle class="loader-progress" cx="60" cy="60" r="50" />
+          <line class="loader-cross-h" x1="20" y1="60" x2="100" y2="60" />
+          <line class="loader-cross-v" x1="60" y1="20" x2="60" y2="100" />
+          <circle class="loader-dot" cx="60" cy="60" r="4" />
+        </svg>
+      </div>
+      <div class="loader-count" id="loaderCount">5</div>
+      <div class="loader-label">ROLL — SOUND — ACTION</div>
+    </div>
+    <div class="loader-scan"></div>
+  </div>
 
   <!-- Film grain overlay -->
   <canvas id="grain" aria-hidden="true"></canvas>
@@ -24,17 +44,19 @@
       <span class="logo-mark">A·R</span>
     </div>
     <ul class="nav-links">
-      <li><a href="#films" data-label="Films">Films</a></li>
-      <li><a href="#about" data-label="About">About</a></li>
-      <li><a href="#awards" data-label="Awards">Awards</a></li>
-      <li><a href="#contact" data-label="Contact">Contact</a></li>
+      <li><a href="#films">Films</a></li>
+      <li><a href="#showreel">Showreel</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#press">Press</a></li>
+      <li><a href="#awards">Awards</a></li>
+      <li><a href="#contact">Contact</a></li>
     </ul>
     <button class="nav-toggle" aria-label="Toggle menu">
       <span></span><span></span><span></span>
     </button>
   </nav>
 
-  <!-- Hero Section -->
+  <!-- ===== Hero ===== -->
   <section id="hero">
     <div class="hero-bg">
       <div class="hero-vignette"></div>
@@ -61,7 +83,7 @@
     </div>
   </section>
 
-  <!-- Films Section -->
+  <!-- ===== Films ===== -->
   <section id="films">
     <div class="section-header reveal">
       <span class="section-label">01 — Filmography</span>
@@ -163,7 +185,48 @@
     </div>
   </section>
 
-  <!-- About Section -->
+  <!-- ===== Showreel ===== -->
+  <section id="showreel">
+    <div class="showreel-inner">
+      <div class="section-header reveal" style="text-align:center">
+        <span class="section-label">02 — Showreel</span>
+        <h2 class="section-title">Watch the Reel</h2>
+      </div>
+      <div class="showreel-stage reveal">
+        <div class="showreel-screen" id="showreelScreen" tabindex="0" role="button" aria-label="Play showreel">
+          <!-- Cinematic poster background -->
+          <div class="showreel-bg"></div>
+          <div class="showreel-scan" aria-hidden="true"></div>
+          <!-- Aspect-ratio guides -->
+          <div class="showreel-bars top" aria-hidden="true"></div>
+          <div class="showreel-bars bottom" aria-hidden="true"></div>
+          <!-- Play button -->
+          <div class="play-btn" aria-hidden="true">
+            <div class="play-ring outer"></div>
+            <div class="play-ring inner"></div>
+            <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor">
+              <polygon points="5,3 19,12 5,21"/>
+            </svg>
+          </div>
+          <!-- Timecode HUD -->
+          <div class="showreel-hud" aria-hidden="true">
+            <span class="hud-item">00:00:00:00</span>
+            <span class="hud-item">24 fps</span>
+            <span class="hud-item">SHOWREEL 2024</span>
+            <span class="hud-item">4K — REC</span>
+          </div>
+          <!-- Corner marks -->
+          <span class="corner tl"></span>
+          <span class="corner tr"></span>
+          <span class="corner bl"></span>
+          <span class="corner br"></span>
+        </div>
+        <p class="showreel-note reveal">Click to play &nbsp;·&nbsp; Replace with your Vimeo or YouTube embed</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== About ===== -->
   <section id="about">
     <div class="about-inner">
       <div class="about-visual reveal">
@@ -185,7 +248,7 @@
 
       <div class="about-text">
         <div class="section-header reveal">
-          <span class="section-label">02 — About</span>
+          <span class="section-label">03 — About</span>
           <h2 class="section-title">The Filmmaker</h2>
         </div>
         <div class="about-body reveal">
@@ -201,15 +264,15 @@
         </div>
         <div class="about-stats reveal">
           <div class="stat">
-            <span class="stat-number">20+</span>
+            <span class="stat-number">20</span><span class="stat-suffix">+</span>
             <span class="stat-label">Years directing</span>
           </div>
           <div class="stat">
-            <span class="stat-number">14</span>
+            <span class="stat-number">14</span><span class="stat-suffix"></span>
             <span class="stat-label">Major awards</span>
           </div>
           <div class="stat">
-            <span class="stat-number">80+</span>
+            <span class="stat-number">80</span><span class="stat-suffix">+</span>
             <span class="stat-label">Festival screenings</span>
           </div>
         </div>
@@ -217,10 +280,104 @@
     </div>
   </section>
 
-  <!-- Awards Section -->
+  <!-- ===== Press ===== -->
+  <section id="press">
+    <div class="section-header reveal" style="text-align:center">
+      <span class="section-label">04 — Press</span>
+      <h2 class="section-title">What They're Saying</h2>
+    </div>
+    <div class="press-track-wrap">
+      <div class="press-track" id="pressTrack">
+
+        <blockquote class="press-card">
+          <p class="press-quote">"Rivera's images carry the weight of a civilization's unspoken grief. <em>La Última Luz</em> is one of the most important films of the decade."</p>
+          <footer class="press-source">
+            <span class="press-pub">The New Yorker</span>
+            <span class="press-film">La Última Luz, 2024</span>
+          </footer>
+        </blockquote>
+
+        <blockquote class="press-card">
+          <p class="press-quote">"A director who understands that silence is the loudest thing in a room. Breathtaking."</p>
+          <footer class="press-source">
+            <span class="press-pub">Variety</span>
+            <span class="press-film">Before the Tide, 2022</span>
+          </footer>
+        </blockquote>
+
+        <blockquote class="press-card">
+          <p class="press-quote">"<em>Manos del Tiempo</em> is documentary filmmaking at its most transcendent — observational, patient, and devastatingly alive."</p>
+          <footer class="press-source">
+            <span class="press-pub">The Guardian</span>
+            <span class="press-film">Manos del Tiempo, 2021</span>
+          </footer>
+        </blockquote>
+
+        <blockquote class="press-card">
+          <p class="press-quote">"Rivera doesn't shoot landscapes — he excavates them. Every frame of <em>El Camino Largo</em> feels like an act of archaeology."</p>
+          <footer class="press-source">
+            <span class="press-pub">Le Monde</span>
+            <span class="press-film">El Camino Largo, 2019</span>
+          </footer>
+        </blockquote>
+
+        <blockquote class="press-card">
+          <p class="press-quote">"A filmmaker of rare moral clarity. Rivera's cinema insists on the humanity of its subjects long after other directors would have looked away."</p>
+          <footer class="press-source">
+            <span class="press-pub">Sight &amp; Sound</span>
+            <span class="press-film">Señales, 2017</span>
+          </footer>
+        </blockquote>
+
+        <!-- Duplicate set for seamless loop -->
+        <blockquote class="press-card" aria-hidden="true">
+          <p class="press-quote">"Rivera's images carry the weight of a civilization's unspoken grief. <em>La Última Luz</em> is one of the most important films of the decade."</p>
+          <footer class="press-source">
+            <span class="press-pub">The New Yorker</span>
+            <span class="press-film">La Última Luz, 2024</span>
+          </footer>
+        </blockquote>
+
+        <blockquote class="press-card" aria-hidden="true">
+          <p class="press-quote">"A director who understands that silence is the loudest thing in a room. Breathtaking."</p>
+          <footer class="press-source">
+            <span class="press-pub">Variety</span>
+            <span class="press-film">Before the Tide, 2022</span>
+          </footer>
+        </blockquote>
+
+        <blockquote class="press-card" aria-hidden="true">
+          <p class="press-quote">"<em>Manos del Tiempo</em> is documentary filmmaking at its most transcendent — observational, patient, and devastatingly alive."</p>
+          <footer class="press-source">
+            <span class="press-pub">The Guardian</span>
+            <span class="press-film">Manos del Tiempo, 2021</span>
+          </footer>
+        </blockquote>
+
+        <blockquote class="press-card" aria-hidden="true">
+          <p class="press-quote">"Rivera doesn't shoot landscapes — he excavates them. Every frame of <em>El Camino Largo</em> feels like an act of archaeology."</p>
+          <footer class="press-source">
+            <span class="press-pub">Le Monde</span>
+            <span class="press-film">El Camino Largo, 2019</span>
+          </footer>
+        </blockquote>
+
+        <blockquote class="press-card" aria-hidden="true">
+          <p class="press-quote">"A filmmaker of rare moral clarity. Rivera's cinema insists on the humanity of its subjects long after other directors would have looked away."</p>
+          <footer class="press-source">
+            <span class="press-pub">Sight &amp; Sound</span>
+            <span class="press-film">Señales, 2017</span>
+          </footer>
+        </blockquote>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Awards ===== -->
   <section id="awards">
     <div class="section-header reveal">
-      <span class="section-label">03 — Recognition</span>
+      <span class="section-label">05 — Recognition</span>
       <h2 class="section-title">Awards &amp; Honors</h2>
     </div>
     <div class="awards-list">
@@ -288,11 +445,37 @@
     </div>
   </section>
 
-  <!-- Contact Section -->
+  <!-- ===== Next Project Teaser ===== -->
+  <section id="next">
+    <div class="next-inner reveal">
+      <p class="next-eyebrow">In production — 2026</p>
+      <h2 class="next-title">
+        <span class="next-title-label">Next film</span>
+        <span class="next-title-name"><em>La Frontera Invisible</em></span>
+      </h2>
+      <p class="next-synopsis">
+        A woman walks the length of a disputed border alone — carrying only a camera and her late father's letters. A meditation on belonging in an age of walls.
+      </p>
+      <div class="next-meta">
+        <span>Feature — 95 min</span>
+        <span>Argentina · Chile · France</span>
+        <span>In pre-production</span>
+      </div>
+      <a href="#contact" class="next-cta">
+        <span>Inquire about the project</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+      <div class="next-lines" aria-hidden="true">
+        <span></span><span></span><span></span><span></span><span></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Contact ===== -->
   <section id="contact">
     <div class="contact-inner">
       <div class="section-header reveal">
-        <span class="section-label">04 — Contact</span>
+        <span class="section-label">06 — Contact</span>
         <h2 class="section-title">Let's Make Something</h2>
       </div>
       <p class="contact-lead reveal">
@@ -320,7 +503,7 @@
     </div>
   </section>
 
-  <!-- Footer -->
+  <!-- ===== Footer ===== -->
   <footer id="footer">
     <div class="footer-inner">
       <span class="footer-logo">A·R</span>
