@@ -1,41 +1,114 @@
 (function () {
   'use strict';
 
-  /* ---- Grain ---- */
+  /* --------------------------------------------------
+     FILM GRAIN
+  -------------------------------------------------- */
   function initGrain() {
     const c = document.getElementById('grain');
     if (!c) return;
     const ctx = c.getContext('2d');
-    const resize = () => { c.width = innerWidth; c.height = innerHeight; };
-    const draw = () => {
-      const d = ctx.createImageData(c.width, c.height);
-      for (let i = 0; i < d.data.length; i += 4) {
+
+    function resize() { c.width = innerWidth; c.height = innerHeight; }
+
+    function tick() {
+      const w = c.width, h = c.height;
+      const img = ctx.createImageData(w, h);
+      const d = img.data;
+      for (let i = 0; i < d.length; i += 4) {
         const v = (Math.random() * 255) | 0;
-        d.data[i] = d.data[i+1] = d.data[i+2] = v;
-        d.data[i+3] = 255;
+        d[i] = d[i+1] = d[i+2] = v;
+        d[i+3] = 255;
       }
-      ctx.putImageData(d, 0, 0);
-      requestAnimationFrame(draw);
-    };
+      ctx.putImageData(img, 0, 0);
+      requestAnimationFrame(tick);
+    }
+
     resize();
-    draw();
+    tick();
     addEventListener('resize', resize);
   }
 
-  /* ---- Loader ---- */
-  function initLoader() {
-    const loader  = document.getElementById('loader');
-    const countEl = document.getElementById('loaderCount');
-    const bar     = document.querySelector('.loader-progress');
-    if (!loader) return;
+  /* --------------------------------------------------
+     SYNTHESISED CLAP SOUND
+  -------------------------------------------------- */
+  function playClap() {
+    try {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
+      const ctx = new AC();
 
-    const TOTAL = 314;
+      // --- Noise burst (the "crack") ---
+      const sr = ctx.sampleRate;
+      const len = (sr * 0.18) | 0;
+      const buf = ctx.createBuffer(1, len, sr);
+      const data = buf.getChannelData(0);
+      for (let i = 0; i < len; i++) {
+        const t = i / sr;
+        data[i] = (Math.random() * 2 - 1) * Math.exp(-t * 85) * 1.2;
+      }
+      const noise = ctx.createBufferSource();
+      noise.buffer = buf;
+
+      // High-pass: remove rumble, keep snap
+      const hp = ctx.createBiquadFilter();
+      hp.type = 'highpass';
+      hp.frequency.value = 900;
+
+      // Bandpass boost around wood-slap frequency
+      const bp = ctx.createBiquadFilter();
+      bp.type = 'peaking';
+      bp.frequency.value = 2400;
+      bp.Q.value = 1.2;
+      bp.gain.value = 8;
+
+      const noiseGain = ctx.createGain();
+      noiseGain.gain.setValueAtTime(1.4, ctx.currentTime);
+      noiseGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.18);
+
+      noise.connect(hp);
+      hp.connect(bp);
+      bp.connect(noiseGain);
+      noiseGain.connect(ctx.destination);
+      noise.start(ctx.currentTime);
+
+      // --- Wood thump (the low-end "body") ---
+      const osc = ctx.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(200, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(55, ctx.currentTime + 0.045);
+
+      const oscGain = ctx.createGain();
+      oscGain.gain.setValueAtTime(0.9, ctx.currentTime);
+      oscGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.06);
+
+      osc.connect(oscGain);
+      oscGain.connect(ctx.destination);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.07);
+
+    } catch (e) {
+      // Audio context blocked (needs user gesture) — silently ignore
+    }
+  }
+
+  /* --------------------------------------------------
+     COUNTDOWN LOADER
+  -------------------------------------------------- */
+  function initLoader(onDone) {
+    const loader  = document.getElementById('loader');
+    const numEl   = document.getElementById('ldNum');
+    const bar     = document.querySelector('.ld-progress');
+    if (!loader) { onDone(); return; }
+
+    const CIRC = 314; // 2π × r50
     const STEPS = 5;
     let n = STEPS;
 
     function set(num) {
-      countEl.textContent = num;
-      bar.style.strokeDashoffset = String(TOTAL - TOTAL * ((STEPS - num + 1) / STEPS));
+      numEl.textContent = num > 0 ? num : '';
+      const offset = CIRC - CIRC * ((STEPS - num + 1) / STEPS);
+      bar.style.strokeDashoffset = String(Math.max(0, offset));
     }
 
     set(STEPS);
@@ -45,51 +118,109 @@
       if (n <= 0) {
         clearInterval(iv);
         bar.style.strokeDashoffset = '0';
-        countEl.textContent = '';
-        setTimeout(dismiss, 280);
+        numEl.textContent = '';
+        setTimeout(() => {
+          loader.classList.add('out');
+          setTimeout(onDone, 500);
+        }, 250);
       } else {
         set(n);
       }
-    }, 880);
-
-    function dismiss() {
-      loader.classList.add('done');
-      document.body.classList.remove('loading');
-    }
+    }, 900);
   }
 
-  /* ---- Nav ---- */
+  /* --------------------------------------------------
+     CLAPPERBOARD
+  -------------------------------------------------- */
+  function initClapper(onDone) {
+    const clapper = document.getElementById('clapper');
+    const arm     = document.getElementById('clapperArm');
+    if (!clapper || !arm) { onDone(); return; }
+
+    // Reveal the clapperboard
+    clapper.classList.add('visible');
+
+    let triggered = false;
+
+    function doClap() {
+      if (triggered) return;
+      triggered = true;
+
+      // Snap arm shut
+      arm.classList.add('snapping');
+
+      // Play sound at the moment of closure
+      setTimeout(playClap, 62);
+
+      // After clap, slide the whole board up
+      setTimeout(() => {
+        clapper.classList.add('exit');
+        setTimeout(() => {
+          clapper.style.display = 'none';
+          document.body.classList.remove('is-loading');
+          onDone();
+        }, 580);
+      }, 400);
+    }
+
+    // Trigger on scroll (wheel/touch/keyboard)
+    function onWheel(e) {
+      if (e.deltaY > 0) doClap();
+    }
+
+    let touchStartY = 0;
+    function onTouchStart(e) {
+      touchStartY = e.touches[0].clientY;
+    }
+    function onTouchMove(e) {
+      if (e.touches[0].clientY < touchStartY - 10) doClap();
+    }
+
+    function onKey(e) {
+      if (['ArrowDown','PageDown','Space',' '].includes(e.key)) {
+        e.preventDefault();
+        doClap();
+      }
+    }
+
+    clapper.addEventListener('wheel',      onWheel,      { passive: true });
+    clapper.addEventListener('touchstart', onTouchStart, { passive: true });
+    clapper.addEventListener('touchmove',  onTouchMove,  { passive: true });
+    clapper.addEventListener('click',      doClap);
+    window.addEventListener('keydown',     onKey);
+  }
+
+  /* --------------------------------------------------
+     NAV
+  -------------------------------------------------- */
   function initNav() {
     const nav    = document.getElementById('nav');
-    const toggle = nav.querySelector('.nav-toggle');
+    const toggle = nav && nav.querySelector('.nav-toggle');
 
-    addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 50), { passive: true });
+    if (!nav) return;
 
-    toggle.addEventListener('click', () => {
-      const open = nav.classList.toggle('open');
-      document.body.style.overflow = open ? 'hidden' : '';
-      const spans = toggle.querySelectorAll('span');
-      if (open) {
-        spans[0].style.transform = 'translateY(7px) rotate(45deg)';
-        spans[1].style.transform = 'translateY(-7px) rotate(-45deg)';
-      } else {
-        spans[0].style.transform = '';
-        spans[1].style.transform = '';
-      }
-    });
+    addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', scrollY > 60);
+    }, { passive: true });
+
+    if (toggle) {
+      toggle.addEventListener('click', () => {
+        const open = nav.classList.toggle('open');
+        document.body.style.overflow = open ? 'hidden' : '';
+      });
+    }
 
     nav.querySelectorAll('.nav-links a').forEach(a => {
       a.addEventListener('click', () => {
         nav.classList.remove('open');
         document.body.style.overflow = '';
-        nav.querySelectorAll('span').forEach(s => s.style.transform = '');
       });
     });
   }
 
-  /* ---- Active nav on scroll ---- */
+  /* Active link highlight */
   function initActiveNav() {
-    const ids   = ['films','showreel','about','press','awards','next','contact'];
+    const ids   = ['films','about','awards','contact'];
     const secs  = ids.map(id => document.getElementById(id)).filter(Boolean);
     const links = document.querySelectorAll('.nav-links a');
 
@@ -98,142 +229,85 @@
       let active = null;
       secs.forEach(s => { if (s.offsetTop <= mid) active = s.id; });
       links.forEach(a => {
-        const on = a.getAttribute('href') === `#${active}`;
-        a.classList.toggle('active', on);
+        a.classList.toggle('active', a.getAttribute('href') === `#${active}`);
       });
     }, { passive: true });
   }
 
-  /* ---- Scroll reveal ---- */
+  /* --------------------------------------------------
+     SCROLL REVEAL
+  -------------------------------------------------- */
   function initReveal() {
     const els = document.querySelectorAll('.reveal');
+
     if (!('IntersectionObserver' in window)) {
-      els.forEach(e => e.classList.add('visible'));
+      els.forEach(e => e.classList.add('on'));
       return;
     }
-    const obs = new IntersectionObserver((entries) => {
-      entries.forEach((entry, i) => {
-        if (entry.isIntersecting) {
-          setTimeout(
-            () => entry.target.classList.add('visible'),
-            parseInt(entry.target.dataset.delay || 0)
-          );
-          obs.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
-    els.forEach((el, i) => { el.dataset.delay = (i % 5) * 80; obs.observe(el); });
-  }
 
-  /* ---- Stat counters ---- */
-  function initCounters() {
-    if (!('IntersectionObserver' in window)) return;
-    const ease = t => 1 - Math.pow(1 - t, 3);
     const obs = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (!entry.isIntersecting) return;
-        const el  = entry.target;
-        const end = parseFloat(el.textContent);
-        let start = null;
-        const step = ts => {
-          if (!start) start = ts;
-          const p = Math.min((ts - start) / 1300, 1);
-          el.textContent = Math.round(ease(p) * end);
-          if (p < 1) requestAnimationFrame(step);
-        };
-        requestAnimationFrame(step);
-        obs.unobserve(el);
+        const delay = parseInt(entry.target.dataset.delay || '0', 10);
+        setTimeout(() => entry.target.classList.add('on'), delay);
+        obs.unobserve(entry.target);
       });
-    }, { threshold: 0.6 });
-    document.querySelectorAll('.stat-n').forEach(el => obs.observe(el));
-  }
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
 
-  /* ---- Showreel ---- */
-  function initShowreel() {
-    const screen = document.getElementById('reelScreen');
-    const tcEl   = document.getElementById('reelTC');
-    if (!screen) return;
-    let secs = 0, timer = null, playing = false;
-
-    const fmt = s => {
-      const h = String(Math.floor(s / 3600)).padStart(2,'0');
-      const m = String(Math.floor((s % 3600) / 60)).padStart(2,'0');
-      const sc = String(s % 60).padStart(2,'0');
-      return `${h}:${m}:${sc}:00`;
-    };
-
-    screen.addEventListener('click', () => {
-      playing = !playing;
-      const play = screen.querySelector('.reel-play');
-      if (playing) {
-        play.style.opacity = '0';
-        timer = setInterval(() => { secs++; if(tcEl) tcEl.textContent = fmt(secs); }, 1000);
-        /* Swap in embed here:
-           const f = document.createElement('iframe');
-           f.src = 'https://player.vimeo.com/video/ID?autoplay=1';
-           f.allow = 'autoplay;fullscreen'; f.style.cssText='position:absolute;inset:0;width:100%;height:100%;border:0;z-index:10;';
-           screen.appendChild(f); */
-      } else {
-        play.style.opacity = '1';
-        clearInterval(timer);
-      }
-    });
-    screen.addEventListener('keydown', e => { if (e.key==='Enter'||e.key===' '){e.preventDefault();screen.click();} });
-  }
-
-  /* ---- Press ticker ---- */
-  function initPress() {
-    const track = document.getElementById('pressTrack');
-    if (!track) return;
-    track.querySelectorAll('.press-card').forEach(c => {
-      c.addEventListener('mouseenter', () => track.style.animationPlayState='paused');
-      c.addEventListener('mouseleave', () => track.style.animationPlayState='running');
+    els.forEach((el, i) => {
+      el.dataset.delay = (i % 5) * 80;
+      obs.observe(el);
     });
   }
 
-  /* ---- Cursor ---- */
+  /* --------------------------------------------------
+     CURSOR
+  -------------------------------------------------- */
   function initCursor() {
     if (window.matchMedia('(hover:none)').matches) return;
 
-    const dot = document.createElement('div');
-    dot.style.cssText = 'position:fixed;width:5px;height:5px;background:#e81c1c;border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .25s,height .25s;mix-blend-mode:normal;';
-    document.body.appendChild(dot);
-
+    const dot  = document.createElement('div');
     const ring = document.createElement('div');
-    ring.style.cssText = 'position:fixed;width:28px;height:28px;border:1px solid rgba(232,28,28,0.4);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .4s cubic-bezier(.16,1,.3,1),height .4s cubic-bezier(.16,1,.3,1),top .1s linear,left .1s linear;';
+
+    dot.style.cssText  = 'position:fixed;width:6px;height:6px;background:#e2e2e2;border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .25s,height .25s,background .25s;';
+    ring.style.cssText = 'position:fixed;width:32px;height:32px;border:1px solid rgba(226,226,226,0.25);border-radius:50%;pointer-events:none;z-index:9997;transform:translate(-50%,-50%);transition:width .45s cubic-bezier(.16,1,.3,1),height .45s cubic-bezier(.16,1,.3,1),top .1s linear,left .1s linear;';
+
+    document.body.appendChild(dot);
     document.body.appendChild(ring);
 
     addEventListener('mousemove', e => {
-      dot.style.left = ring.style.left = e.clientX + 'px';
-      dot.style.top  = ring.style.top  = e.clientY + 'px';
+      dot.style.left  = ring.style.left = e.clientX + 'px';
+      dot.style.top   = ring.style.top  = e.clientY + 'px';
     });
 
-    document.querySelectorAll('a,button,.reel-screen,.film-row').forEach(el => {
-      el.addEventListener('mouseenter', () => { dot.style.width=dot.style.height='10px'; ring.style.width=ring.style.height='44px'; });
-      el.addEventListener('mouseleave', () => { dot.style.width=dot.style.height='5px';  ring.style.width=ring.style.height='28px'; });
+    document.querySelectorAll('a, button').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        dot.style.width = dot.style.height = '10px';
+        ring.style.width = ring.style.height = '48px';
+      });
+      el.addEventListener('mouseleave', () => {
+        dot.style.width = dot.style.height = '6px';
+        ring.style.width = ring.style.height = '32px';
+      });
     });
   }
 
-  /* ---- Page fade in ---- */
-  function initFade() {
-    const o = document.createElement('div');
-    o.style.cssText = 'position:fixed;inset:0;background:#080808;z-index:8000;opacity:1;pointer-events:none;transition:opacity .7s cubic-bezier(.16,1,.3,1);';
-    document.body.appendChild(o);
-    requestAnimationFrame(() => setTimeout(() => o.style.opacity='0', 40));
-  }
-
-  /* ---- Init ---- */
+  /* --------------------------------------------------
+     BOOT SEQUENCE
+  -------------------------------------------------- */
   document.addEventListener('DOMContentLoaded', () => {
     initGrain();
-    initLoader();
+    initCursor();
     initNav();
     initActiveNav();
     initReveal();
-    initCounters();
-    initShowreel();
-    initPress();
-    initCursor();
-    initFade();
+
+    // 1 — Countdown, then clapperboard, then site
+    initLoader(() => {
+      initClapper(() => {
+        // Site is now visible; nothing extra needed
+      });
+    });
   });
 
 })();

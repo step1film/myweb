@@ -3,423 +3,356 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Step1Film — Filmmaker</title>
+  <title>Ayman Hassdo — Filmmaker</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
-<body class="loading">
+<body class="is-loading">
 
-  <!-- ===== Countdown Loader ===== -->
-  <div id="loader" aria-hidden="true">
-    <div class="loader-stripe top"></div>
-    <div class="loader-stripe bottom"></div>
-    <div class="loader-body">
-      <div class="loader-ring-wrap">
-        <svg class="loader-svg" viewBox="0 0 120 120">
-          <circle class="loader-track"    cx="60" cy="60" r="50"/>
-          <circle class="loader-progress" cx="60" cy="60" r="50"/>
-          <line class="loader-ch" x1="20" y1="60" x2="100" y2="60"/>
-          <line class="loader-cv" x1="60" y1="20" x2="60"  y2="100"/>
-          <circle class="loader-dot" cx="60" cy="60" r="3"/>
-        </svg>
-        <div class="loader-num" id="loaderCount">5</div>
-      </div>
-      <p class="loader-label">ROLL · SOUND · ACTION</p>
-    </div>
-    <div class="loader-scan"></div>
-  </div>
-
-  <!-- Film grain -->
+  <!-- =====================================================
+       FILM GRAIN
+  ====================================================== -->
   <canvas id="grain" aria-hidden="true"></canvas>
 
-  <!-- ===== Nav ===== -->
-  <nav id="nav">
-    <a href="#hero" class="nav-brand">STEP<span class="brand-red">1</span>FILM</a>
-    <ul class="nav-links">
-      <li><a href="#films">Films</a></li>
-      <li><a href="#showreel">Reel</a></li>
-      <li><a href="#about">About</a></li>
-      <li><a href="#press">Press</a></li>
-      <li><a href="#awards">Awards</a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
-    <button class="nav-toggle" aria-label="Menu">
-      <span></span><span></span>
-    </button>
-  </nav>
-
-  <!-- ===== Hero ===== -->
-  <section id="hero">
-    <div class="hero-rule" aria-hidden="true"></div>
-    <div class="hero-content">
-      <div class="hero-meta fade-up d1">
-        <span class="rec-dot"></span>
-        <span>DIRECTOR · CINEMATOGRAPHER · STORYTELLER</span>
+  <!-- =====================================================
+       01. COUNTDOWN LOADER
+  ====================================================== -->
+  <div id="loader" aria-hidden="true">
+    <div class="ld-holes top"  aria-hidden="true"></div>
+    <div class="ld-holes bot"  aria-hidden="true"></div>
+    <div class="ld-scan"       aria-hidden="true"></div>
+    <div class="ld-body">
+      <div class="ld-ring-wrap">
+        <svg class="ld-svg" viewBox="0 0 120 120" fill="none">
+          <circle class="ld-track"    cx="60" cy="60" r="50"/>
+          <circle class="ld-progress" cx="60" cy="60" r="50"/>
+          <line   class="ld-ch" x1="20" y1="60"  x2="100" y2="60"/>
+          <line   class="ld-cv" x1="60" y1="20"  x2="60"  y2="100"/>
+          <circle class="ld-dot" cx="60" cy="60" r="4"/>
+        </svg>
+        <span class="ld-num" id="ldNum">5</span>
       </div>
-      <h1 class="hero-name fade-up d2">
-        <span class="name-first">ALEJANDRO</span>
-        <span class="name-last">RIVERA</span>
-      </h1>
-      <p class="hero-quote fade-up d3">
-        "Every frame is a confession."
-      </p>
-      <a href="#films" class="hero-cta fade-up d4">
-        <span class="cta-line"></span>
-        <span>VIEW FILMOGRAPHY</span>
+      <p class="ld-label">ROLL &nbsp;·&nbsp; SOUND &nbsp;·&nbsp; ACTION</p>
+    </div>
+  </div>
+
+  <!-- =====================================================
+       02. CLAPPERBOARD
+  ====================================================== -->
+  <div id="clapper" aria-hidden="true">
+
+    <!-- The striped arm — pivots at bottom-left (hinge) -->
+    <div class="cl-arm" id="clapperArm">
+      <div class="cl-arm-stripes" aria-hidden="true"></div>
+      <div class="cl-arm-info">
+        <span>STEP1FILM</span>
+        <span>AYMAN HASSDO</span>
+      </div>
+    </div>
+
+    <!-- Hinge rule (stays fixed) -->
+    <div class="cl-hinge" aria-hidden="true">
+      <span class="cl-hinge-dot left"  aria-hidden="true"></span>
+      <span class="cl-hinge-dot right" aria-hidden="true"></span>
+    </div>
+
+    <!-- Board body -->
+    <div class="cl-board">
+      <div class="cl-brand">
+        STEP<em>1</em>FILM
+      </div>
+
+      <div class="cl-grid">
+        <div class="cl-cell wide">
+          <span class="cl-key">PRODUCTION</span>
+          <span class="cl-val">STEP1FILM STUDIOS</span>
+        </div>
+        <div class="cl-cell">
+          <span class="cl-key">ROLL</span>
+          <span class="cl-val">01</span>
+        </div>
+
+        <div class="cl-cell wide">
+          <span class="cl-key">DIRECTOR</span>
+          <span class="cl-val">AYMAN HASSDO</span>
+        </div>
+        <div class="cl-cell">
+          <span class="cl-key">CAMERA / DP</span>
+          <span class="cl-val">AYMAN HASSDO</span>
+        </div>
+
+        <div class="cl-cell">
+          <span class="cl-key">SCENE</span>
+          <span class="cl-val">001</span>
+        </div>
+        <div class="cl-cell">
+          <span class="cl-key">TAKE</span>
+          <span class="cl-val">01</span>
+        </div>
+        <div class="cl-cell">
+          <span class="cl-key">DATE</span>
+          <span class="cl-val">2026</span>
+        </div>
+        <div class="cl-cell">
+          <span class="cl-key">DAY / NIGHT</span>
+          <span class="cl-val">NIGHT</span>
+        </div>
+      </div>
+
+      <div class="cl-hint">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+          <line x1="12" y1="4" x2="12" y2="20"/>
+          <polyline points="6,14 12,20 18,14"/>
+        </svg>
+        SCROLL TO BEGIN
+      </div>
+    </div>
+
+  </div><!-- #clapper -->
+
+  <!-- =====================================================
+       03. SITE PAGE
+  ====================================================== -->
+  <div id="page">
+
+    <!-- NAV -->
+    <nav id="nav">
+      <a href="#hero" class="nav-logo">
+        STEP<span>1</span>FILM
       </a>
-    </div>
-    <div class="hero-index fade-up d5" aria-hidden="true">
-      <span>BUENOS AIRES</span>
-      <span class="sep">·</span>
-      <span>EST. 2004</span>
-    </div>
-    <div class="hero-scroll" aria-hidden="true">
-      <div class="scroll-bar"></div>
-    </div>
-  </section>
+      <ul class="nav-links">
+        <li><a href="#films">Films</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#awards">Awards</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <button class="nav-toggle" aria-label="Menu">
+        <span></span><span></span>
+      </button>
+    </nav>
 
-  <!-- ===== Films ===== -->
-  <section id="films">
-    <header class="sec-head">
-      <span class="sec-num">01</span>
-      <h2 class="sec-title">FILMOGRAPHY</h2>
-      <div class="sec-rule"></div>
-    </header>
-
-    <div class="films-list">
-
-      <article class="film-row reveal">
-        <div class="film-row-num">001</div>
-        <div class="film-row-body">
-          <div class="film-row-top">
-            <h3 class="film-row-title">LA ÚLTIMA LUZ</h3>
-            <span class="film-row-year">2024</span>
-          </div>
-          <div class="film-row-bottom">
-            <span class="film-row-type">Feature Film</span>
-            <span class="film-row-fest">Sundance Official Selection</span>
-          </div>
-          <p class="film-row-syn">A haunting portrait of memory and loss set against the vanishing landscapes of Patagonia.</p>
-        </div>
-        <div class="film-row-bar" aria-hidden="true"></div>
-      </article>
-
-      <article class="film-row reveal">
-        <div class="film-row-num">002</div>
-        <div class="film-row-body">
-          <div class="film-row-top">
-            <h3 class="film-row-title">BEFORE THE TIDE</h3>
-            <span class="film-row-year">2022</span>
-          </div>
-          <div class="film-row-bottom">
-            <span class="film-row-type">Short Film</span>
-            <span class="film-row-fest">Cannes — Palme d'Or Nominee</span>
-          </div>
-          <p class="film-row-syn">Two strangers share one last night in a city about to be swallowed by the sea.</p>
-        </div>
-        <div class="film-row-bar" aria-hidden="true"></div>
-      </article>
-
-      <article class="film-row reveal">
-        <div class="film-row-num">003</div>
-        <div class="film-row-body">
-          <div class="film-row-top">
-            <h3 class="film-row-title">MANOS DEL TIEMPO</h3>
-            <span class="film-row-year">2021</span>
-          </div>
-          <div class="film-row-bottom">
-            <span class="film-row-type">Documentary</span>
-            <span class="film-row-fest">IDFA — Best Documentary</span>
-          </div>
-          <p class="film-row-syn">An intimate look at artisans keeping ancient craft traditions alive in the Andean highlands.</p>
-        </div>
-        <div class="film-row-bar" aria-hidden="true"></div>
-      </article>
-
-      <article class="film-row reveal">
-        <div class="film-row-num">004</div>
-        <div class="film-row-body">
-          <div class="film-row-top">
-            <h3 class="film-row-title">EL CAMINO LARGO</h3>
-            <span class="film-row-year">2019</span>
-          </div>
-          <div class="film-row-bottom">
-            <span class="film-row-type">Feature Film</span>
-            <span class="film-row-fest">Berlin — Silver Bear</span>
-          </div>
-          <p class="film-row-syn">A father crosses a continent to find his estranged daughter, only to discover himself along the way.</p>
-        </div>
-        <div class="film-row-bar" aria-hidden="true"></div>
-      </article>
-
-      <article class="film-row reveal">
-        <div class="film-row-num">005</div>
-        <div class="film-row-body">
-          <div class="film-row-top">
-            <h3 class="film-row-title">SEÑALES</h3>
-            <span class="film-row-year">2017</span>
-          </div>
-          <div class="film-row-bottom">
-            <span class="film-row-type">Short Film</span>
-            <span class="film-row-fest">Venice — Orizzonti Award</span>
-          </div>
-          <p class="film-row-syn">In a remote lighthouse, a keeper discovers signals from a ship that sank thirty years ago.</p>
-        </div>
-        <div class="film-row-bar" aria-hidden="true"></div>
-      </article>
-
-      <article class="film-row reveal">
-        <div class="film-row-num">006</div>
-        <div class="film-row-body">
-          <div class="film-row-top">
-            <h3 class="film-row-title">EL PROYECCIONISTA</h3>
-            <span class="film-row-year">2015</span>
-          </div>
-          <div class="film-row-bottom">
-            <span class="film-row-type">Feature Film</span>
-            <span class="film-row-fest">Tribeca — Grand Jury Prize</span>
-          </div>
-          <p class="film-row-syn">A silent woman inherits a failing cinema and finds the reels hold the town's darkest secret.</p>
-        </div>
-        <div class="film-row-bar" aria-hidden="true"></div>
-      </article>
-
-    </div>
-  </section>
-
-  <!-- ===== Showreel ===== -->
-  <section id="showreel">
-    <header class="sec-head">
-      <span class="sec-num">02</span>
-      <h2 class="sec-title">SHOWREEL</h2>
-      <div class="sec-rule"></div>
-    </header>
-    <div class="reel-stage reveal">
-      <div class="reel-screen" id="reelScreen" tabindex="0" role="button" aria-label="Play showreel">
-        <div class="reel-bg"></div>
-        <div class="reel-scanlines" aria-hidden="true"></div>
-        <div class="reel-bar top" aria-hidden="true"></div>
-        <div class="reel-bar bottom" aria-hidden="true"></div>
-        <span class="reel-corner tl"></span>
-        <span class="reel-corner tr"></span>
-        <span class="reel-corner bl"></span>
-        <span class="reel-corner br"></span>
-        <div class="reel-hud" aria-hidden="true">
-          <span id="reelTC">00:00:00:00</span>
-          <span>24fps · 4K</span>
-          <span class="hud-rec"><span class="rec-dot"></span>REC</span>
-        </div>
-        <div class="reel-play" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
-        </div>
+    <!-- HERO — fullscreen video -->
+    <section id="hero">
+      <div class="hero-video-wrap">
+        <!--
+          REPLACE VIDEO_ID with your YouTube video ID.
+          Example: youtube.com/watch?v=dQw4w9WgXcQ → VIDEO_ID = dQw4w9WgXcQ
+        -->
+        <iframe
+          id="ytFrame"
+          src="https://www.youtube.com/embed/VIDEO_ID?autoplay=1&mute=1&loop=1&playlist=VIDEO_ID&controls=0&rel=0&showinfo=0&playsinline=1&modestbranding=1"
+          frameborder="0"
+          allow="autoplay; fullscreen; picture-in-picture"
+          allowfullscreen
+          title="Showreel"
+        ></iframe>
+        <div class="hero-overlay" aria-hidden="true"></div>
       </div>
-      <p class="reel-hint">// REPLACE WITH VIMEO OR YOUTUBE EMBED</p>
-    </div>
-  </section>
+      <div class="hero-content">
+        <p class="hero-eyebrow">Director &nbsp;·&nbsp; Cinematographer</p>
+        <h1 class="hero-name">
+          <span>AYMAN</span>
+          <span>HASSDO</span>
+        </h1>
+        <a href="#films" class="hero-down" aria-label="Enter site">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+            <line x1="12" y1="4" x2="12" y2="20"/>
+            <polyline points="6,14 12,20 18,14"/>
+          </svg>
+        </a>
+      </div>
+    </section>
 
-  <!-- ===== About ===== -->
-  <section id="about">
-    <header class="sec-head">
-      <span class="sec-num">03</span>
-      <h2 class="sec-title">ABOUT</h2>
-      <div class="sec-rule"></div>
-    </header>
-    <div class="about-grid">
-      <div class="about-left reveal">
-        <blockquote class="about-pull">
-          "I make films about people standing at the edge of something — geography, grief, time."
-        </blockquote>
-        <div class="about-portrait">
-          <div class="portrait-inner">
-            <svg viewBox="0 0 200 260" xmlns="http://www.w3.org/2000/svg">
-              <rect width="200" height="260" fill="#111"/>
-              <circle cx="100" cy="95" r="42" fill="#222"/>
-              <ellipse cx="100" cy="210" rx="68" ry="55" fill="#222"/>
+    <!-- FILMS -->
+    <section id="films">
+      <div class="sec-label reveal">01</div>
+      <h2 class="sec-title reveal">Selected Works</h2>
+
+      <div class="films-list">
+
+        <article class="film-item reveal">
+          <div class="film-num">001</div>
+          <div class="film-body">
+            <div class="film-meta">
+              <span class="film-year">2024</span>
+              <span class="film-type">Feature</span>
+              <span class="film-fest">Sundance Official Selection</span>
+            </div>
+            <h3 class="film-title">La Última Luz</h3>
+            <p class="film-syn">A haunting portrait of memory and loss set against the vanishing landscapes of Patagonia.</p>
+          </div>
+        </article>
+
+        <article class="film-item reveal">
+          <div class="film-num">002</div>
+          <div class="film-body">
+            <div class="film-meta">
+              <span class="film-year">2022</span>
+              <span class="film-type">Short</span>
+              <span class="film-fest">Cannes — Palme d'Or Nominee</span>
+            </div>
+            <h3 class="film-title">Before the Tide</h3>
+            <p class="film-syn">Two strangers share one last night in a city about to be swallowed by the sea.</p>
+          </div>
+        </article>
+
+        <article class="film-item reveal">
+          <div class="film-num">003</div>
+          <div class="film-body">
+            <div class="film-meta">
+              <span class="film-year">2021</span>
+              <span class="film-type">Documentary</span>
+              <span class="film-fest">IDFA — Best Documentary</span>
+            </div>
+            <h3 class="film-title">Manos del Tiempo</h3>
+            <p class="film-syn">An intimate look at artisans keeping ancient craft traditions alive in the Andean highlands.</p>
+          </div>
+        </article>
+
+        <article class="film-item reveal">
+          <div class="film-num">004</div>
+          <div class="film-body">
+            <div class="film-meta">
+              <span class="film-year">2019</span>
+              <span class="film-type">Feature</span>
+              <span class="film-fest">Berlin — Silver Bear</span>
+            </div>
+            <h3 class="film-title">El Camino Largo</h3>
+            <p class="film-syn">A father crosses a continent to find his estranged daughter, only to discover himself along the way.</p>
+          </div>
+        </article>
+
+        <article class="film-item reveal">
+          <div class="film-num">005</div>
+          <div class="film-body">
+            <div class="film-meta">
+              <span class="film-year">2017</span>
+              <span class="film-type">Short</span>
+              <span class="film-fest">Venice — Orizzonti Award</span>
+            </div>
+            <h3 class="film-title">Señales</h3>
+            <p class="film-syn">In a remote lighthouse, a keeper discovers signals from a ship that sank thirty years ago.</p>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about">
+      <div class="sec-label reveal">02</div>
+      <h2 class="sec-title reveal">The Filmmaker</h2>
+      <div class="about-grid">
+        <div class="about-portrait reveal">
+          <div class="portrait-box">
+            <svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg">
+              <rect width="300" height="400" fill="#111"/>
+              <circle cx="150" cy="145" r="64" fill="#1e1e1e"/>
+              <ellipse cx="150" cy="320" rx="100" ry="80" fill="#1e1e1e"/>
             </svg>
           </div>
-          <div class="portrait-tag">
+          <div class="portrait-meta">
             <span>Behind the lens</span>
-            <span>Buenos Aires, 2024</span>
+            <span>2026</span>
+          </div>
+        </div>
+        <div class="about-text">
+          <p class="about-lead reveal">
+            Ayman Hassdo is an award-winning director and cinematographer whose work explores memory, identity, and the places where they collide.
+          </p>
+          <p class="reveal">
+            With a rigorous visual language and a deeply humanist perspective, Hassdo has spent over a decade making films that refuse easy answers. His work draws on landscape as character, silence as language, and the invisible borders that define how we live.
+          </p>
+          <p class="reveal">
+            His features and shorts have screened at over 80 international festivals, received 14 major awards, and been acquired for distribution in 40+ countries.
+          </p>
+          <div class="about-nums reveal">
+            <div class="about-num-item">
+              <span class="annum">14</span>
+              <span class="anlabel">Awards</span>
+            </div>
+            <div class="about-num-item">
+              <span class="annum">80+</span>
+              <span class="anlabel">Festivals</span>
+            </div>
+            <div class="about-num-item">
+              <span class="annum">40+</span>
+              <span class="anlabel">Countries</span>
+            </div>
           </div>
         </div>
       </div>
-      <div class="about-right reveal">
-        <p class="about-lead">
-          Alejandro Rivera is an award-winning Argentine director and cinematographer whose work explores memory, identity, and landscape.
-        </p>
-        <p>
-          Born in Buenos Aires and trained at the Centro de Investigación Cinematográfica, Rivera has spent two decades crafting films that live at the border between the personal and the political. His visual language draws from the long tradition of Latin American magical realism, filtered through a rigorous, contemplative lens.
-        </p>
-        <p>
-          His features and shorts have screened at over 80 international festivals, received 14 major awards, and been acquired for distribution in 40+ countries. Rivera also teaches advanced directing at the Universidad del Cine.
-        </p>
-        <div class="about-stats">
-          <div class="stat-block">
-            <span class="stat-n">20</span><span class="stat-sfx">+</span>
-            <span class="stat-l">YEARS</span>
-          </div>
-          <div class="stat-block">
-            <span class="stat-n">14</span><span class="stat-sfx"></span>
-            <span class="stat-l">AWARDS</span>
-          </div>
-          <div class="stat-block">
-            <span class="stat-n">80</span><span class="stat-sfx">+</span>
-            <span class="stat-l">FESTIVALS</span>
-          </div>
-          <div class="stat-block">
-            <span class="stat-n">40</span><span class="stat-sfx">+</span>
-            <span class="stat-l">COUNTRIES</span>
-          </div>
+    </section>
+
+    <!-- AWARDS -->
+    <section id="awards">
+      <div class="sec-label reveal">03</div>
+      <h2 class="sec-title reveal">Recognition</h2>
+      <div class="awards-list">
+        <div class="award-row reveal">
+          <span class="aw-year">2024</span>
+          <span class="aw-name">Sundance Film Festival</span>
+          <span class="aw-detail">Official Selection — La Última Luz</span>
+        </div>
+        <div class="award-row reveal">
+          <span class="aw-year">2022</span>
+          <span class="aw-name">Cannes Film Festival</span>
+          <span class="aw-detail">Palme d'Or Nominee — Before the Tide</span>
+        </div>
+        <div class="award-row reveal">
+          <span class="aw-year">2021</span>
+          <span class="aw-name">IDFA Amsterdam</span>
+          <span class="aw-detail">Best International Documentary — Manos del Tiempo</span>
+        </div>
+        <div class="award-row reveal">
+          <span class="aw-year">2019</span>
+          <span class="aw-name">Berlin International Film Festival</span>
+          <span class="aw-detail">Silver Bear — El Camino Largo</span>
+        </div>
+        <div class="award-row reveal">
+          <span class="aw-year">2017</span>
+          <span class="aw-name">Venice Film Festival</span>
+          <span class="aw-detail">Orizzonti Award — Señales</span>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ===== Press ===== -->
-  <section id="press">
-    <header class="sec-head">
-      <span class="sec-num">04</span>
-      <h2 class="sec-title">PRESS</h2>
-      <div class="sec-rule"></div>
-    </header>
-    <div class="press-wrap">
-      <div class="press-track" id="pressTrack">
-
-        <blockquote class="press-card">
-          <p>"Rivera's images carry the weight of a civilization's unspoken grief. One of the most important films of the decade."</p>
-          <footer><b>THE NEW YORKER</b> <span>— La Última Luz</span></footer>
-        </blockquote>
-
-        <blockquote class="press-card">
-          <p>"A director who understands that silence is the loudest thing in a room. Breathtaking."</p>
-          <footer><b>VARIETY</b> <span>— Before the Tide</span></footer>
-        </blockquote>
-
-        <blockquote class="press-card">
-          <p>"Documentary filmmaking at its most transcendent — observational, patient, and devastatingly alive."</p>
-          <footer><b>THE GUARDIAN</b> <span>— Manos del Tiempo</span></footer>
-        </blockquote>
-
-        <blockquote class="press-card">
-          <p>"Rivera doesn't shoot landscapes — he excavates them. Every frame feels like an act of archaeology."</p>
-          <footer><b>LE MONDE</b> <span>— El Camino Largo</span></footer>
-        </blockquote>
-
-        <blockquote class="press-card">
-          <p>"A filmmaker of rare moral clarity. Rivera's cinema insists on the humanity of its subjects long after other directors would have looked away."</p>
-          <footer><b>SIGHT &amp; SOUND</b> <span>— Señales</span></footer>
-        </blockquote>
-
-        <!-- Duplicate for seamless loop -->
-        <blockquote class="press-card" aria-hidden="true">
-          <p>"Rivera's images carry the weight of a civilization's unspoken grief. One of the most important films of the decade."</p>
-          <footer><b>THE NEW YORKER</b> <span>— La Última Luz</span></footer>
-        </blockquote>
-        <blockquote class="press-card" aria-hidden="true">
-          <p>"A director who understands that silence is the loudest thing in a room. Breathtaking."</p>
-          <footer><b>VARIETY</b> <span>— Before the Tide</span></footer>
-        </blockquote>
-        <blockquote class="press-card" aria-hidden="true">
-          <p>"Documentary filmmaking at its most transcendent — observational, patient, and devastatingly alive."</p>
-          <footer><b>THE GUARDIAN</b> <span>— Manos del Tiempo</span></footer>
-        </blockquote>
-        <blockquote class="press-card" aria-hidden="true">
-          <p>"Rivera doesn't shoot landscapes — he excavates them. Every frame feels like an act of archaeology."</p>
-          <footer><b>LE MONDE</b> <span>— El Camino Largo</span></footer>
-        </blockquote>
-        <blockquote class="press-card" aria-hidden="true">
-          <p>"A filmmaker of rare moral clarity. Rivera's cinema insists on the humanity of its subjects long after other directors would have looked away."</p>
-          <footer><b>SIGHT &amp; SOUND</b> <span>— Señales</span></footer>
-        </blockquote>
-
+    <!-- CONTACT -->
+    <section id="contact">
+      <div class="sec-label reveal">04</div>
+      <h2 class="sec-title reveal">Contact</h2>
+      <p class="contact-intro reveal">Available for feature film projects, commercial direction, and collaborative ventures.</p>
+      <div class="contact-list reveal">
+        <a href="mailto:ayman@step1film.com" class="contact-row">
+          <span class="cr-label">Email</span>
+          <span class="cr-val">ayman@step1film.com</span>
+        </a>
+        <a href="#" class="contact-row">
+          <span class="cr-label">Instagram</span>
+          <span class="cr-val">@step1film</span>
+        </a>
+        <a href="#" class="contact-row">
+          <span class="cr-label">IMDb</span>
+          <span class="cr-val">Ayman Hassdo</span>
+        </a>
+        <a href="#" class="contact-row">
+          <span class="cr-label">Representation</span>
+          <span class="cr-val">Available on request</span>
+        </a>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ===== Awards ===== -->
-  <section id="awards">
-    <header class="sec-head">
-      <span class="sec-num">05</span>
-      <h2 class="sec-title">AWARDS</h2>
-      <div class="sec-rule"></div>
-    </header>
-    <table class="awards-table">
-      <thead>
-        <tr>
-          <th>YEAR</th>
-          <th>FESTIVAL</th>
-          <th>AWARD</th>
-          <th>FILM</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr class="reveal"><td>2024</td><td>Sundance</td><td>Official Selection</td><td>La Última Luz</td></tr>
-        <tr class="reveal"><td>2022</td><td>Cannes</td><td>Palme d'Or Nominee</td><td>Before the Tide</td></tr>
-        <tr class="reveal"><td>2021</td><td>IDFA</td><td>Best Documentary</td><td>Manos del Tiempo</td></tr>
-        <tr class="reveal"><td>2019</td><td>Berlinale</td><td>Silver Bear</td><td>El Camino Largo</td></tr>
-        <tr class="reveal"><td>2017</td><td>Venice</td><td>Orizzonti Award</td><td>Señales</td></tr>
-        <tr class="reveal"><td>2015</td><td>Tribeca</td><td>Grand Jury Prize</td><td>El Proyeccionista</td></tr>
-      </tbody>
-    </table>
-  </section>
-
-  <!-- ===== Next Project ===== -->
-  <section id="next">
-    <div class="next-inner reveal">
-      <div class="next-tag"><span class="rec-dot"></span>IN PRODUCTION — 2026</div>
-      <h2 class="next-title">LA FRONTERA<br>INVISIBLE</h2>
-      <p class="next-syn">
-        A woman walks the length of a disputed border alone — carrying only a camera and her late father's letters. A meditation on belonging in an age of walls.
-      </p>
-      <div class="next-meta">
-        <span>Feature · 95 min</span>
-        <span>Argentina · Chile · France</span>
-        <span>Pre-production</span>
+    <!-- FOOTER -->
+    <footer id="footer">
+      <div class="foot-inner">
+        <span class="foot-brand">STEP<em>1</em>FILM</span>
+        <span class="foot-copy">© 2026 Ayman Hassdo</span>
       </div>
-      <a href="#contact" class="next-link">
-        INQUIRE ABOUT THE PROJECT
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-      </a>
-    </div>
-  </section>
+    </footer>
 
-  <!-- ===== Contact ===== -->
-  <section id="contact">
-    <header class="sec-head">
-      <span class="sec-num">06</span>
-      <h2 class="sec-title">CONTACT</h2>
-      <div class="sec-rule"></div>
-    </header>
-    <div class="contact-grid reveal">
-      <a href="mailto:studio@step1film.com" class="contact-item">
-        <span class="ci-label">EMAIL</span>
-        <span class="ci-val">studio@step1film.com</span>
-      </a>
-      <a href="#" class="contact-item">
-        <span class="ci-label">INSTAGRAM</span>
-        <span class="ci-val">@step1film</span>
-      </a>
-      <a href="#" class="contact-item">
-        <span class="ci-label">IMDb</span>
-        <span class="ci-val">Alejandro Rivera</span>
-      </a>
-      <a href="#" class="contact-item">
-        <span class="ci-label">REPRESENTATION</span>
-        <span class="ci-val">WME — Los Angeles</span>
-      </a>
-    </div>
-  </section>
-
-  <!-- ===== Footer ===== -->
-  <footer id="footer">
-    <div class="foot-inner">
-      <span class="foot-brand">STEP<span class="brand-red">1</span>FILM</span>
-      <span class="foot-copy">© 2026 Alejandro Rivera</span>
-      <span class="foot-tag">"Every frame is a confession."</span>
-    </div>
-  </footer>
+  </div><!-- #page -->
 
   <script src="main.js"></script>
 </body>
