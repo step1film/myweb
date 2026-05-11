@@ -22,7 +22,7 @@
 
 /* ---- Reset ---- */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: auto; }
 body {
   background: var(--bg);
   color: var(--text);
@@ -30,6 +30,7 @@ body {
   font-weight: 300;
   line-height: 1.65;
   overflow-x: hidden;
+  cursor: none;
 }
 body.is-loading { overflow: hidden; }
 a { color: inherit; text-decoration: none; }
@@ -134,17 +135,42 @@ img, svg { display: block; }
   position: fixed; inset: 0;
   z-index: 8000;
   background: #0f0f0f;
-  overflow: hidden; /* clips arm above viewport */
-  /* starts hidden, JS fades it in after loader */
+  overflow: hidden;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.4s ease;
+  /* No CSS transition — JS drives all transforms/opacity */
 }
-#clapper.visible { opacity: 1; pointer-events: auto; }
-#clapper.exit {
-  transform: translateY(-100%);
-  transition: transform 0.55s cubic-bezier(0.7, 0, 1, 1);
+
+/* ---- Ramp (studio light sweep) ---- */
+.cl-ramp {
+  position: absolute;
+  inset: 0;
   pointer-events: none;
+  z-index: 10;
+  overflow: hidden;
+}
+.cl-ramp::after {
+  content: '';
+  position: absolute;
+  top: -20%;
+  left: -100%;
+  width: 48%;
+  height: 140%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255,255,255,0.025) 25%,
+    rgba(255,255,255,0.065) 50%,
+    rgba(255,255,255,0.025) 75%,
+    transparent 100%
+  );
+  transform: skewX(-12deg);
+  animation: rampLight 7s ease-in-out infinite;
+}
+@keyframes rampLight {
+  0%   { left: -100% }
+  38%  { left: 160% }
+  100% { left: 160% }
 }
 
 /* ---- Arm ---- */
@@ -152,25 +178,18 @@ img, svg { display: block; }
   position: absolute;
   top: 0; left: 0; right: 0;
   height: clamp(90px, 15vh, 140px);
-  /* Diagonal B&W stripes */
   background: repeating-linear-gradient(
     -45deg,
     #0f0f0f 0px, #0f0f0f 22px,
     #f0f0f0 22px, #f0f0f0 44px
   );
-  transform-origin: 0% 100%; /* bottom-left = hinge point */
-  transform: rotate(-16deg); /* OPEN position */
+  transform-origin: 0% 100%;
+  transform: rotate(-16deg);
   will-change: transform;
   z-index: 2;
+  /* No CSS transition — JS animates scroll-driven */
 }
 
-/* Arm snaps shut — JS adds this class */
-.cl-arm.snapping {
-  transform: rotate(0deg);
-  transition: transform 0.06s cubic-bezier(0.1, 0, 0.8, 0.8);
-}
-
-/* Labels on arm (visible near hinge when open) */
 .cl-arm-info {
   position: absolute;
   bottom: 10px; left: 14px;
@@ -184,7 +203,6 @@ img, svg { display: block; }
   pointer-events: none;
 }
 
-/* Arm stripes texture pseudo (adds white stripe highlights) */
 .cl-arm-stripes {
   position: absolute; inset: 0;
   background: repeating-linear-gradient(
@@ -197,7 +215,7 @@ img, svg { display: block; }
   pointer-events: none;
 }
 
-/* ---- Hinge line (fixed, always visible) ---- */
+/* ---- Hinge line ---- */
 .cl-hinge {
   position: absolute;
   top: clamp(90px, 15vh, 140px);
@@ -222,7 +240,7 @@ img, svg { display: block; }
 /* ---- Board body ---- */
 .cl-board {
   position: absolute;
-  top: clamp(94px, 15vh, 144px); /* just below hinge */
+  top: clamp(94px, 15vh, 144px);
   left: 0; right: 0; bottom: 0;
   padding: clamp(1.5rem, 4vh, 3rem) clamp(1.5rem, 5vw, 5rem);
   display: flex;
@@ -232,7 +250,6 @@ img, svg { display: block; }
   overflow: hidden;
 }
 
-/* Brand / production title on board */
 .cl-brand {
   font-family: var(--ff-display);
   font-size: clamp(1.8rem, 4vw, 3.2rem);
@@ -246,7 +263,6 @@ img, svg { display: block; }
   font-style: normal;
 }
 
-/* Info grid */
 .cl-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -277,7 +293,6 @@ img, svg { display: block; }
   line-height: 1;
 }
 
-/* Scroll hint */
 .cl-hint {
   display: flex;
   flex-direction: column;
@@ -294,19 +309,25 @@ img, svg { display: block; }
 @keyframes clHint { 0%,100%{opacity:0.5;transform:translateY(0)} 50%{opacity:1;transform:translateY(4px)} }
 
 /* =====================================================
-   PAGE (the actual site, revealed after clapper)
+   PAGE
    ===================================================== */
 #page {
   position: relative;
   z-index: 1;
 }
 
-/* ---- Nav ---- */
+/* Clapper zone: invisible 100vh spacer that gives scroll space for the clapperboard */
+#clapper-zone {
+  height: 100vh;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* ---- Nav (logo only) ---- */
 #nav {
   position: fixed; top: 0; left: 0; right: 0;
   height: var(--nav-h);
   display: flex; align-items: center;
-  justify-content: space-between;
   padding: 0 clamp(1.25rem, 5vw, 4rem);
   z-index: 700;
   transition: background 0.4s, border-color 0.4s;
@@ -325,48 +346,6 @@ img, svg { display: block; }
 }
 .nav-logo span { color: var(--red); }
 
-.nav-links { display: flex; gap: 2rem; }
-.nav-links a {
-  font-size: 0.68rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  transition: color 0.25s;
-  position: relative;
-}
-.nav-links a::after {
-  content: '';
-  position: absolute; bottom: -2px; left: 0;
-  width: 0; height: 1px; background: var(--white);
-  transition: width 0.35s var(--ease);
-}
-.nav-links a:hover,
-.nav-links a.active { color: var(--white); }
-.nav-links a:hover::after,
-.nav-links a.active::after { width: 100%; }
-
-.nav-toggle {
-  display: none; flex-direction: column; gap: 5px;
-  background: none; border: none; cursor: pointer; padding: 4px;
-}
-.nav-toggle span {
-  display: block; width: 20px; height: 1px;
-  background: var(--white);
-  transition: 0.35s var(--ease);
-}
-
-/* Mobile nav open */
-#nav.open .nav-links {
-  display: flex; flex-direction: column;
-  position: fixed; inset: 0;
-  background: var(--bg);
-  align-items: center; justify-content: center;
-  gap: 2.5rem; z-index: 600;
-}
-#nav.open .nav-links a { font-size: 1rem; color: var(--text); }
-#nav.open .nav-toggle span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
-#nav.open .nav-toggle span:nth-child(2) { transform: translateY(-6px) rotate(-45deg); }
-
 /* ---- Hero ---- */
 #hero {
   position: relative;
@@ -376,7 +355,6 @@ img, svg { display: block; }
   background: #000;
 }
 
-/* YouTube fullscreen background */
 .hero-video-wrap {
   position: absolute; inset: 0;
   pointer-events: none;
@@ -385,23 +363,20 @@ img, svg { display: block; }
 .hero-video-wrap iframe {
   position: absolute;
   top: 50%; left: 50%;
-  /* Maintain 16:9 and cover the viewport */
   width: 100vw;
-  height: 56.25vw; /* 100 / (16/9) */
+  height: 56.25vw;
   min-height: 100vh;
-  min-width: 177.78vh; /* 100 * (16/9) */
+  min-width: 177.78vh;
   transform: translate(-50%, -50%);
   border: none;
 }
 
-/* Dark overlay on video for legibility */
 .hero-overlay {
   position: absolute; inset: 0;
   background:
     linear-gradient(0deg, rgba(12,12,12,0.9) 0%, rgba(12,12,12,0.25) 50%, rgba(12,12,12,0.5) 100%);
 }
 
-/* Hero text */
 .hero-content {
   position: absolute; inset: 0;
   display: flex; flex-direction: column;
@@ -428,7 +403,6 @@ img, svg { display: block; }
   display: flex; flex-direction: column;
 }
 
-/* Scroll-down arrow */
 .hero-down {
   position: absolute; bottom: 2.5rem; left: 50%;
   transform: translateX(-50%);
@@ -439,16 +413,16 @@ img, svg { display: block; }
 @keyframes heroPulse { 0%,100%{opacity:0.4;transform:translateX(-50%) translateY(0)} 50%{opacity:1;transform:translateX(-50%) translateY(5px)} }
 
 /* =====================================================
-   HORIZONTAL SCROLL SYSTEM
+   WIPE PANEL SYSTEM
+   4 panels stacked absolutely, clip-path driven by scroll
    ===================================================== */
 
-/* Wrapper creates scroll room: 4 panels × 100vh */
+/* Scroll spacer — sticky element travels 3×100vh (4 panels × 3 transitions) */
 #h-wrapper {
   height: calc(4 * 100vh);
   position: relative;
 }
 
-/* Sticky viewport container */
 #h-sticky {
   position: sticky;
   top: 0;
@@ -456,29 +430,26 @@ img, svg { display: block; }
   overflow: hidden;
 }
 
-/* Sliding track */
+/* Stacked panel container */
 #h-track {
-  display: flex;
-  width: calc(4 * 100vw);
-  height: 100%;
-  will-change: transform;
-  transition: transform 0.75s cubic-bezier(0.76, 0, 0.24, 1);
-}
-
-/* Each full-viewport panel */
-.h-panel {
-  width: 100vw;
-  height: 100vh;
-  flex-shrink: 0;
-  overflow: hidden;
   position: relative;
+  width: 100%;
+  height: 100%;
 }
 
-/* Alternating subtle backgrounds */
-#films   { background: var(--bg); }
-#about   { background: var(--surface); }
-#awards  { background: #101010; }
-#contact { background: var(--surface); }
+/* All panels fill the sticky viewport, stacked via z-index */
+.h-panel {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  will-change: clip-path;
+}
+
+/* Z-order: later panels sit on top so they wipe over earlier ones */
+#films   { z-index: 1; background: var(--bg);      clip-path: inset(0 0 0 0%);   }
+#about   { z-index: 2; background: var(--surface);  clip-path: inset(0 0 0 100%); }
+#awards  { z-index: 3; background: #101010;         clip-path: inset(0 0 0 100%); }
+#contact { z-index: 4; background: var(--surface);  clip-path: inset(0 0 0 100%); }
 
 /* ---- Panel inner layout ---- */
 .panel-inner {
@@ -492,7 +463,6 @@ img, svg { display: block; }
   overflow: hidden;
 }
 
-/* About panel splits horizontally */
 .panel-inner--about {
   flex-direction: row;
   align-items: center;
@@ -500,7 +470,6 @@ img, svg { display: block; }
   padding-top: var(--nav-h);
 }
 
-/* ---- Panel header ---- */
 .panel-head {
   display: flex;
   align-items: baseline;
@@ -568,7 +537,7 @@ img, svg { display: block; }
   border-radius: 50%;
   background: var(--text-dim);
   border: none;
-  cursor: pointer;
+  cursor: none;
   padding: 0;
   transition: background 0.3s, transform 0.3s, height 0.35s var(--ease);
 }
@@ -603,7 +572,7 @@ img, svg { display: block; }
   width: 42px; height: 42px;
   border: 1px solid var(--line-s);
   background: none;
-  cursor: pointer;
+  cursor: none;
   display: flex; align-items: center; justify-content: center;
   color: var(--text-dim);
   transition: border-color 0.25s, color 0.25s, background 0.25s;
@@ -611,22 +580,6 @@ img, svg { display: block; }
 .h-arrow:hover { border-color: var(--white); color: var(--white); background: rgba(255,255,255,0.04); }
 .h-arrow svg { width: 18px; height: 18px; }
 .h-arrow:disabled { opacity: 0.2; cursor: default; pointer-events: none; }
-
-/* Slide-in animation for panel content */
-.h-panel .panel-inner > * {
-  opacity: 0;
-  transform: translateX(30px);
-  transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
-}
-.h-panel.is-active .panel-inner > * {
-  opacity: 1;
-  transform: translateX(0);
-}
-.h-panel.is-active .panel-inner > *:nth-child(1) { transition-delay: 0.05s; }
-.h-panel.is-active .panel-inner > *:nth-child(2) { transition-delay: 0.15s; }
-.h-panel.is-active .panel-inner > *:nth-child(3) { transition-delay: 0.25s; }
-.h-panel.is-active .panel-inner > *:nth-child(4) { transition-delay: 0.35s; }
-.h-panel.is-active .panel-inner > *:nth-child(5) { transition-delay: 0.4s;  }
 
 /* =====================================================
    FILMS PANEL CONTENT
@@ -837,12 +790,25 @@ img, svg { display: block; }
 }
 
 /* =====================================================
+   FILM REEL CURSOR
+   ===================================================== */
+#film-cursor {
+  position: fixed;
+  top: 0; left: 0;
+  width: 44px; height: 72px;
+  pointer-events: none;
+  z-index: 99999;
+  transform: translate(-22px, -20px);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+#film-cursor.visible { opacity: 1; }
+#film-cursor svg { width: 100%; height: 100%; }
+
+/* =====================================================
    RESPONSIVE
    ===================================================== */
 @media (max-width: 700px) {
-  .nav-links  { display: none; }
-  .nav-toggle { display: flex; }
-
   .panel-inner--about {
     flex-direction: column;
     padding-top: calc(var(--nav-h) + 1.5rem);
@@ -863,4 +829,11 @@ img, svg { display: block; }
   .contact-row { grid-template-columns: 1fr; }
   .cr-label { margin-bottom: -0.2rem; }
   .h-arrows { display: none; }
+}
+
+/* Touch devices: restore pointer */
+@media (hover: none) {
+  body { cursor: auto; }
+  #film-cursor { display: none; }
+  .h-dot, .h-arrow { cursor: pointer; }
 }

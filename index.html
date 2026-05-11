@@ -43,6 +43,9 @@
   ====================================================== -->
   <div id="clapper" aria-hidden="true">
 
+    <!-- Studio ramp light -->
+    <div class="cl-ramp" aria-hidden="true"></div>
+
     <!-- The striped arm — pivots at bottom-left (hinge) -->
     <div class="cl-arm" id="clapperArm">
       <div class="cl-arm-stripes" aria-hidden="true"></div>
@@ -117,21 +120,15 @@
   ====================================================== -->
   <div id="page">
 
-    <!-- NAV -->
+    <!-- NAV — logo only -->
     <nav id="nav">
       <a href="#hero" class="nav-logo">
         STEP<span>1</span>FILM
       </a>
-      <ul class="nav-links">
-        <li><a href="#films">Films</a></li>
-        <li><a href="#about">About</a></li>
-        <li><a href="#awards">Awards</a></li>
-        <li><a href="#contact">Contact</a></li>
-      </ul>
-      <button class="nav-toggle" aria-label="Menu">
-        <span></span><span></span>
-      </button>
     </nav>
+
+    <!-- Clapper scroll zone — 100vh spacer that drives the clapperboard -->
+    <div id="clapper-zone" aria-hidden="true"></div>
 
     <!-- HERO — fullscreen video -->
     <section id="hero">
@@ -167,17 +164,17 @@
 
     <!-- =====================================================
          HORIZONTAL SCROLL WRAPPER
-         4 panels: Films · About · Awards · Contact
+         4 stacked panels, wipe-driven by scroll
     ====================================================== -->
     <div id="h-wrapper">
 
-      <!-- Sticky viewport — stays at top while user scrolls through panels -->
+      <!-- Sticky viewport -->
       <div id="h-sticky">
 
-        <!-- Sliding track -->
+        <!-- Stacked panel track -->
         <div id="h-track">
 
-          <!-- PANEL 01 — FILMS -->
+          <!-- PANEL 01 — FILMS (base layer, always visible) -->
           <section class="h-panel" id="films" data-panel="0">
             <div class="panel-inner">
               <div class="panel-head">
