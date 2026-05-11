@@ -165,186 +165,233 @@
       </div>
     </section>
 
-    <!-- FILMS -->
-    <section id="films">
-      <div class="sec-label reveal">01</div>
-      <h2 class="sec-title reveal">Selected Works</h2>
+    <!-- =====================================================
+         HORIZONTAL SCROLL WRAPPER
+         4 panels: Films · About · Awards · Contact
+    ====================================================== -->
+    <div id="h-wrapper">
 
-      <div class="films-list">
+      <!-- Sticky viewport — stays at top while user scrolls through panels -->
+      <div id="h-sticky">
 
-        <article class="film-item reveal">
-          <div class="film-num">001</div>
-          <div class="film-body">
-            <div class="film-meta">
-              <span class="film-year">2024</span>
-              <span class="film-type">Feature</span>
-              <span class="film-fest">Sundance Official Selection</span>
+        <!-- Sliding track -->
+        <div id="h-track">
+
+          <!-- PANEL 01 — FILMS -->
+          <section class="h-panel" id="films" data-panel="0">
+            <div class="panel-inner">
+              <div class="panel-head">
+                <span class="panel-num">01</span>
+                <h2 class="panel-title">Selected<br>Works</h2>
+              </div>
+              <div class="films-list">
+                <article class="film-item">
+                  <div class="film-num">001</div>
+                  <div class="film-body">
+                    <div class="film-meta">
+                      <span class="film-year">2024</span>
+                      <span class="film-type">Feature</span>
+                      <span class="film-fest">Sundance</span>
+                    </div>
+                    <h3 class="film-title">La Última Luz</h3>
+                    <p class="film-syn">Memory and loss against the vanishing landscapes of Patagonia.</p>
+                  </div>
+                </article>
+                <article class="film-item">
+                  <div class="film-num">002</div>
+                  <div class="film-body">
+                    <div class="film-meta">
+                      <span class="film-year">2022</span>
+                      <span class="film-type">Short</span>
+                      <span class="film-fest">Cannes</span>
+                    </div>
+                    <h3 class="film-title">Before the Tide</h3>
+                    <p class="film-syn">One last night in a city about to be swallowed by the sea.</p>
+                  </div>
+                </article>
+                <article class="film-item">
+                  <div class="film-num">003</div>
+                  <div class="film-body">
+                    <div class="film-meta">
+                      <span class="film-year">2021</span>
+                      <span class="film-type">Doc</span>
+                      <span class="film-fest">IDFA</span>
+                    </div>
+                    <h3 class="film-title">Manos del Tiempo</h3>
+                    <p class="film-syn">Artisans keeping ancient craft traditions alive in the Andean highlands.</p>
+                  </div>
+                </article>
+                <article class="film-item">
+                  <div class="film-num">004</div>
+                  <div class="film-body">
+                    <div class="film-meta">
+                      <span class="film-year">2019</span>
+                      <span class="film-type">Feature</span>
+                      <span class="film-fest">Berlin</span>
+                    </div>
+                    <h3 class="film-title">El Camino Largo</h3>
+                    <p class="film-syn">A father crossing a continent to find his estranged daughter.</p>
+                  </div>
+                </article>
+                <article class="film-item">
+                  <div class="film-num">005</div>
+                  <div class="film-body">
+                    <div class="film-meta">
+                      <span class="film-year">2017</span>
+                      <span class="film-type">Short</span>
+                      <span class="film-fest">Venice</span>
+                    </div>
+                    <h3 class="film-title">Señales</h3>
+                    <p class="film-syn">Signals from a ship that sank thirty years ago.</p>
+                  </div>
+                </article>
+              </div>
             </div>
-            <h3 class="film-title">La Última Luz</h3>
-            <p class="film-syn">A haunting portrait of memory and loss set against the vanishing landscapes of Patagonia.</p>
-          </div>
-        </article>
+          </section>
 
-        <article class="film-item reveal">
-          <div class="film-num">002</div>
-          <div class="film-body">
-            <div class="film-meta">
-              <span class="film-year">2022</span>
-              <span class="film-type">Short</span>
-              <span class="film-fest">Cannes — Palme d'Or Nominee</span>
+          <!-- PANEL 02 — ABOUT -->
+          <section class="h-panel" id="about" data-panel="1">
+            <div class="panel-inner panel-inner--about">
+              <div class="about-portrait">
+                <div class="portrait-box">
+                  <svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="300" height="400" fill="#111"/>
+                    <circle cx="150" cy="145" r="64" fill="#1e1e1e"/>
+                    <ellipse cx="150" cy="320" rx="100" ry="80" fill="#1e1e1e"/>
+                  </svg>
+                </div>
+              </div>
+              <div class="about-content">
+                <div class="panel-head">
+                  <span class="panel-num">02</span>
+                  <h2 class="panel-title">The<br>Filmmaker</h2>
+                </div>
+                <p class="about-lead">
+                  Ayman Hassdo is an award-winning director and cinematographer whose work explores memory, identity, and the places where they collide.
+                </p>
+                <p class="about-body">
+                  With a rigorous visual language and a deeply humanist perspective, Hassdo has spent over a decade making films that refuse easy answers — drawing on landscape as character and silence as language.
+                </p>
+                <div class="about-nums">
+                  <div class="about-num-item">
+                    <span class="annum">14</span>
+                    <span class="anlabel">Awards</span>
+                  </div>
+                  <div class="about-num-item">
+                    <span class="annum">80+</span>
+                    <span class="anlabel">Festivals</span>
+                  </div>
+                  <div class="about-num-item">
+                    <span class="annum">40+</span>
+                    <span class="anlabel">Countries</span>
+                  </div>
+                </div>
+              </div>
             </div>
-            <h3 class="film-title">Before the Tide</h3>
-            <p class="film-syn">Two strangers share one last night in a city about to be swallowed by the sea.</p>
-          </div>
-        </article>
+          </section>
 
-        <article class="film-item reveal">
-          <div class="film-num">003</div>
-          <div class="film-body">
-            <div class="film-meta">
-              <span class="film-year">2021</span>
-              <span class="film-type">Documentary</span>
-              <span class="film-fest">IDFA — Best Documentary</span>
+          <!-- PANEL 03 — AWARDS -->
+          <section class="h-panel" id="awards" data-panel="2">
+            <div class="panel-inner">
+              <div class="panel-head">
+                <span class="panel-num">03</span>
+                <h2 class="panel-title">Recognition</h2>
+              </div>
+              <div class="awards-list">
+                <div class="award-row">
+                  <span class="aw-year">2024</span>
+                  <span class="aw-name">Sundance Film Festival</span>
+                  <span class="aw-detail">Official Selection — La Última Luz</span>
+                </div>
+                <div class="award-row">
+                  <span class="aw-year">2022</span>
+                  <span class="aw-name">Cannes Film Festival</span>
+                  <span class="aw-detail">Palme d'Or Nominee — Before the Tide</span>
+                </div>
+                <div class="award-row">
+                  <span class="aw-year">2021</span>
+                  <span class="aw-name">IDFA Amsterdam</span>
+                  <span class="aw-detail">Best Documentary — Manos del Tiempo</span>
+                </div>
+                <div class="award-row">
+                  <span class="aw-year">2019</span>
+                  <span class="aw-name">Berlin Film Festival</span>
+                  <span class="aw-detail">Silver Bear — El Camino Largo</span>
+                </div>
+                <div class="award-row">
+                  <span class="aw-year">2017</span>
+                  <span class="aw-name">Venice Film Festival</span>
+                  <span class="aw-detail">Orizzonti Award — Señales</span>
+                </div>
+              </div>
             </div>
-            <h3 class="film-title">Manos del Tiempo</h3>
-            <p class="film-syn">An intimate look at artisans keeping ancient craft traditions alive in the Andean highlands.</p>
-          </div>
-        </article>
+          </section>
 
-        <article class="film-item reveal">
-          <div class="film-num">004</div>
-          <div class="film-body">
-            <div class="film-meta">
-              <span class="film-year">2019</span>
-              <span class="film-type">Feature</span>
-              <span class="film-fest">Berlin — Silver Bear</span>
+          <!-- PANEL 04 — CONTACT -->
+          <section class="h-panel" id="contact" data-panel="3">
+            <div class="panel-inner panel-inner--contact">
+              <div class="panel-head">
+                <span class="panel-num">04</span>
+                <h2 class="panel-title">Let's<br>Work</h2>
+              </div>
+              <p class="contact-intro">Available for feature film projects, commercial direction, and collaborative ventures.</p>
+              <div class="contact-list">
+                <a href="mailto:ayman@step1film.com" class="contact-row">
+                  <span class="cr-label">Email</span>
+                  <span class="cr-val">ayman@step1film.com</span>
+                </a>
+                <a href="#" class="contact-row">
+                  <span class="cr-label">Instagram</span>
+                  <span class="cr-val">@step1film</span>
+                </a>
+                <a href="#" class="contact-row">
+                  <span class="cr-label">IMDb</span>
+                  <span class="cr-val">Ayman Hassdo</span>
+                </a>
+                <a href="#" class="contact-row">
+                  <span class="cr-label">Representation</span>
+                  <span class="cr-val">Available on request</span>
+                </a>
+              </div>
             </div>
-            <h3 class="film-title">El Camino Largo</h3>
-            <p class="film-syn">A father crosses a continent to find his estranged daughter, only to discover himself along the way.</p>
+          </section>
+
+        </div><!-- #h-track -->
+
+        <!-- Side navigation -->
+        <nav id="h-nav" aria-label="Section navigation">
+          <div class="h-nav-counter">
+            <span id="hCur">01</span>
+            <span class="h-nav-sep">/</span>
+            <span>04</span>
           </div>
-        </article>
-
-        <article class="film-item reveal">
-          <div class="film-num">005</div>
-          <div class="film-body">
-            <div class="film-meta">
-              <span class="film-year">2017</span>
-              <span class="film-type">Short</span>
-              <span class="film-fest">Venice — Orizzonti Award</span>
-            </div>
-            <h3 class="film-title">Señales</h3>
-            <p class="film-syn">In a remote lighthouse, a keeper discovers signals from a ship that sank thirty years ago.</p>
+          <div class="h-nav-dots">
+            <button class="h-dot active" data-i="0" aria-label="Films"></button>
+            <button class="h-dot" data-i="1" aria-label="About"></button>
+            <button class="h-dot" data-i="2" aria-label="Awards"></button>
+            <button class="h-dot" data-i="3" aria-label="Contact"></button>
           </div>
-        </article>
+          <span class="h-nav-label" id="hLabel">Films</span>
+        </nav>
 
-      </div>
-    </section>
-
-    <!-- ABOUT -->
-    <section id="about">
-      <div class="sec-label reveal">02</div>
-      <h2 class="sec-title reveal">The Filmmaker</h2>
-      <div class="about-grid">
-        <div class="about-portrait reveal">
-          <div class="portrait-box">
-            <svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg">
-              <rect width="300" height="400" fill="#111"/>
-              <circle cx="150" cy="145" r="64" fill="#1e1e1e"/>
-              <ellipse cx="150" cy="320" rx="100" ry="80" fill="#1e1e1e"/>
+        <!-- Arrow hints -->
+        <div class="h-arrows" aria-hidden="true">
+          <button class="h-arrow h-arrow--prev" id="hPrev" aria-label="Previous">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+              <polyline points="15,18 9,12 15,6"/>
             </svg>
-          </div>
-          <div class="portrait-meta">
-            <span>Behind the lens</span>
-            <span>2026</span>
-          </div>
+          </button>
+          <button class="h-arrow h-arrow--next" id="hNext" aria-label="Next">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+              <polyline points="9,6 15,12 9,18"/>
+            </svg>
+          </button>
         </div>
-        <div class="about-text">
-          <p class="about-lead reveal">
-            Ayman Hassdo is an award-winning director and cinematographer whose work explores memory, identity, and the places where they collide.
-          </p>
-          <p class="reveal">
-            With a rigorous visual language and a deeply humanist perspective, Hassdo has spent over a decade making films that refuse easy answers. His work draws on landscape as character, silence as language, and the invisible borders that define how we live.
-          </p>
-          <p class="reveal">
-            His features and shorts have screened at over 80 international festivals, received 14 major awards, and been acquired for distribution in 40+ countries.
-          </p>
-          <div class="about-nums reveal">
-            <div class="about-num-item">
-              <span class="annum">14</span>
-              <span class="anlabel">Awards</span>
-            </div>
-            <div class="about-num-item">
-              <span class="annum">80+</span>
-              <span class="anlabel">Festivals</span>
-            </div>
-            <div class="about-num-item">
-              <span class="annum">40+</span>
-              <span class="anlabel">Countries</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
 
-    <!-- AWARDS -->
-    <section id="awards">
-      <div class="sec-label reveal">03</div>
-      <h2 class="sec-title reveal">Recognition</h2>
-      <div class="awards-list">
-        <div class="award-row reveal">
-          <span class="aw-year">2024</span>
-          <span class="aw-name">Sundance Film Festival</span>
-          <span class="aw-detail">Official Selection — La Última Luz</span>
-        </div>
-        <div class="award-row reveal">
-          <span class="aw-year">2022</span>
-          <span class="aw-name">Cannes Film Festival</span>
-          <span class="aw-detail">Palme d'Or Nominee — Before the Tide</span>
-        </div>
-        <div class="award-row reveal">
-          <span class="aw-year">2021</span>
-          <span class="aw-name">IDFA Amsterdam</span>
-          <span class="aw-detail">Best International Documentary — Manos del Tiempo</span>
-        </div>
-        <div class="award-row reveal">
-          <span class="aw-year">2019</span>
-          <span class="aw-name">Berlin International Film Festival</span>
-          <span class="aw-detail">Silver Bear — El Camino Largo</span>
-        </div>
-        <div class="award-row reveal">
-          <span class="aw-year">2017</span>
-          <span class="aw-name">Venice Film Festival</span>
-          <span class="aw-detail">Orizzonti Award — Señales</span>
-        </div>
-      </div>
-    </section>
+      </div><!-- #h-sticky -->
+    </div><!-- #h-wrapper -->
 
-    <!-- CONTACT -->
-    <section id="contact">
-      <div class="sec-label reveal">04</div>
-      <h2 class="sec-title reveal">Contact</h2>
-      <p class="contact-intro reveal">Available for feature film projects, commercial direction, and collaborative ventures.</p>
-      <div class="contact-list reveal">
-        <a href="mailto:ayman@step1film.com" class="contact-row">
-          <span class="cr-label">Email</span>
-          <span class="cr-val">ayman@step1film.com</span>
-        </a>
-        <a href="#" class="contact-row">
-          <span class="cr-label">Instagram</span>
-          <span class="cr-val">@step1film</span>
-        </a>
-        <a href="#" class="contact-row">
-          <span class="cr-label">IMDb</span>
-          <span class="cr-val">Ayman Hassdo</span>
-        </a>
-        <a href="#" class="contact-row">
-          <span class="cr-label">Representation</span>
-          <span class="cr-val">Available on request</span>
-        </a>
-      </div>
-    </section>
-
-    <!-- FOOTER -->
+    <!-- FOOTER (after all panels) -->
     <footer id="footer">
       <div class="foot-inner">
         <span class="foot-brand">STEP<em>1</em>FILM</span>

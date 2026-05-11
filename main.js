@@ -218,46 +218,138 @@
     });
   }
 
-  /* Active link highlight */
+  /* Active nav link — driven by horizontal panel index */
   function initActiveNav() {
-    const ids   = ['films','about','awards','contact'];
-    const secs  = ids.map(id => document.getElementById(id)).filter(Boolean);
-    const links = document.querySelectorAll('.nav-links a');
-
-    addEventListener('scroll', () => {
-      const mid = scrollY + innerHeight / 2;
-      let active = null;
-      secs.forEach(s => { if (s.offsetTop <= mid) active = s.id; });
-      links.forEach(a => {
-        a.classList.toggle('active', a.getAttribute('href') === `#${active}`);
-      });
-    }, { passive: true });
+    // Panels update this; wired inside initHorizontalScroll via goTo()
+    // This stub keeps the call order intact
   }
 
   /* --------------------------------------------------
-     SCROLL REVEAL
+     HORIZONTAL SCROLL PANELS
   -------------------------------------------------- */
-  function initReveal() {
-    const els = document.querySelectorAll('.reveal');
+  function initHorizontalScroll() {
+    const wrapper = document.getElementById('h-wrapper');
+    const track   = document.getElementById('h-track');
+    const panels  = Array.from(document.querySelectorAll('.h-panel'));
+    const dots    = Array.from(document.querySelectorAll('.h-dot'));
+    const curEl   = document.getElementById('hCur');
+    const labelEl = document.getElementById('hLabel');
+    const prevBtn = document.getElementById('hPrev');
+    const nextBtn = document.getElementById('hNext');
 
-    if (!('IntersectionObserver' in window)) {
-      els.forEach(e => e.classList.add('on'));
-      return;
+    if (!wrapper || !track || !panels.length) return;
+
+    const TOTAL   = panels.length;
+    const LABELS  = ['Films', 'About', 'Awards', 'Contact'];
+    let current   = 0;
+    let animating = false;
+
+    function fmt(n) { return String(n + 1).padStart(2, '0'); }
+
+    function goTo(index, source) {
+      index = Math.max(0, Math.min(TOTAL - 1, index));
+      if (index === current && source !== 'init') return;
+
+      // Deactivate old panel
+      panels[current].classList.remove('is-active');
+      current = index;
+
+      // Move track
+      track.style.transform = `translateX(calc(-${current} * 100vw))`;
+
+      // Activate new panel (content slides in)
+      requestAnimationFrame(() => {
+        panels[current].classList.add('is-active');
+      });
+
+      // Update nav dots
+      dots.forEach((d, i) => d.classList.toggle('active', i === current));
+
+      // Update counter + label
+      if (curEl)   curEl.textContent   = fmt(current);
+      if (labelEl) labelEl.textContent = LABELS[current] || '';
+
+      // Update arrow states
+      if (prevBtn) prevBtn.disabled = current === 0;
+      if (nextBtn) nextBtn.disabled = current === TOTAL - 1;
+
+      // Scroll the page so the h-wrapper is fully in view
+      if (source === 'dot' || source === 'key' || source === 'arrow') {
+        const wrapTop = wrapper.offsetTop;
+        const target  = wrapTop + current * window.innerHeight;
+        window.scrollTo({ top: target, behavior: 'smooth' });
+      }
     }
 
-    const obs = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (!entry.isIntersecting) return;
-        const delay = parseInt(entry.target.dataset.delay || '0', 10);
-        setTimeout(() => entry.target.classList.add('on'), delay);
-        obs.unobserve(entry.target);
-      });
-    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+    // ---- Scroll-driven panning ----
+    function onScroll() {
+      const rect    = wrapper.getBoundingClientRect();
+      const scrolled = -rect.top;                  // px scrolled into the wrapper
+      if (scrolled < 0) return;                    // above wrapper, ignore
+      const vh      = window.innerHeight;
+      const index   = Math.round(scrolled / vh);
+      goTo(Math.min(index, TOTAL - 1));
+    }
 
-    els.forEach((el, i) => {
-      el.dataset.delay = (i % 5) * 80;
-      obs.observe(el);
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    // ---- Dot navigation ----
+    dots.forEach(dot => {
+      dot.addEventListener('click', () => {
+        const i = parseInt(dot.dataset.i, 10);
+        goTo(i, 'dot');
+      });
     });
+
+    // ---- Arrow buttons ----
+    if (prevBtn) prevBtn.addEventListener('click', () => goTo(current - 1, 'arrow'));
+    if (nextBtn) nextBtn.addEventListener('click', () => goTo(current + 1, 'arrow'));
+
+    // ---- Keyboard ----
+    window.addEventListener('keydown', e => {
+      // Only act when the sticky panel is in view
+      const rect = wrapper.getBoundingClientRect();
+      if (rect.top > 10 || rect.bottom < -10) return;
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); goTo(current + 1, 'key'); }
+      if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   { e.preventDefault(); goTo(current - 1, 'key'); }
+    });
+
+    // ---- Touch swipe ----
+    let tx = 0, ty = 0;
+    const sticky = document.getElementById('h-sticky');
+    if (sticky) {
+      sticky.addEventListener('touchstart', e => {
+        tx = e.touches[0].clientX;
+        ty = e.touches[0].clientY;
+      }, { passive: true });
+
+      sticky.addEventListener('touchend', e => {
+        const dx = e.changedTouches[0].clientX - tx;
+        const dy = e.changedTouches[0].clientY - ty;
+        if (Math.abs(dx) < 40 && Math.abs(dy) < 40) return;
+        if (Math.abs(dx) > Math.abs(dy)) {
+          // Horizontal swipe → change panel
+          if (dx < 0) goTo(current + 1, 'key');
+          else        goTo(current - 1, 'key');
+        }
+      }, { passive: true });
+    }
+
+    // ---- Nav link overrides ----
+    // Clicking Films/About/Awards/Contact in the nav jumps to correct panel
+    const panelMap = { films: 0, about: 1, awards: 2, contact: 3 };
+    document.querySelectorAll('#nav .nav-links a').forEach(a => {
+      const id = a.getAttribute('href').replace('#', '');
+      if (id in panelMap) {
+        a.addEventListener('click', e => {
+          e.preventDefault();
+          goTo(panelMap[id], 'dot');
+        });
+      }
+    });
+
+    // ---- Init ----
+    goTo(0, 'init');
   }
 
   /* --------------------------------------------------
@@ -300,12 +392,12 @@
     initCursor();
     initNav();
     initActiveNav();
-    initReveal();
+    initHorizontalScroll();
 
-    // 1 — Countdown, then clapperboard, then site
+    // Countdown → clapperboard → site
     initLoader(() => {
       initClapper(() => {
-        // Site is now visible; nothing extra needed
+        // site revealed; horizontal scroll already wired
       });
     });
   });
