@@ -130,10 +130,31 @@ img, svg { display: block; }
 #clapper {
   position: fixed; inset: 0;
   z-index: 8000;
-  background: #0f0f0f;
+  background: transparent;
   overflow: hidden;
   opacity: 0;
   pointer-events: none;
+  perspective: 1400px;
+  perspective-origin: 50% 40%;
+}
+
+/* 3D scene that floats subtly */
+.cl-scene {
+  position: absolute; inset: 0;
+  background: #0f0f0f;
+  transform-style: preserve-3d;
+  animation: clapFloat 14s ease-in-out infinite;
+  box-shadow:
+    0 40px 120px rgba(0,0,0,0.95),
+    inset 0 0 100px rgba(0,0,0,0.55);
+}
+
+@keyframes clapFloat {
+  0%,100% { transform: rotateX(0deg)    rotateY(0deg)   scale3d(1,1,1); }
+  18%     { transform: rotateX(1.6deg)  rotateY(-2.2deg) scale3d(1.008,1.008,1); }
+  40%     { transform: rotateX(-0.6deg) rotateY(1.4deg)  scale3d(1.003,1.003,1); }
+  65%     { transform: rotateX(1.0deg)  rotateY(-0.8deg) scale3d(1.005,1.005,1); }
+  82%     { transform: rotateX(-0.3deg) rotateY(0.6deg)  scale3d(0.998,0.998,1); }
 }
 
 .cl-ramp {
@@ -143,28 +164,37 @@ img, svg { display: block; }
   z-index: 10;
   overflow: hidden;
 }
+/* Warm ambient studio light (static) */
+.cl-ramp::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse at 25% 35%, rgba(255,195,80,0.09) 0%, transparent 55%),
+    radial-gradient(ellipse at 75% 65%, rgba(80,120,255,0.05) 0%, transparent 48%);
+}
+/* Moving sweep highlight */
 .cl-ramp::after {
   content: '';
   position: absolute;
-  top: -20%;
-  left: -100%;
-  width: 48%;
-  height: 140%;
+  top: -15%;
+  left: -90%;
+  width: 42%;
+  height: 130%;
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(255,255,255,0.025) 25%,
-    rgba(255,255,255,0.065) 50%,
-    rgba(255,255,255,0.025) 75%,
+    rgba(255,255,255,0.04) 20%,
+    rgba(255,255,255,0.14) 50%,
+    rgba(255,255,255,0.04) 80%,
     transparent 100%
   );
-  transform: skewX(-12deg);
-  animation: rampLight 7s ease-in-out infinite;
+  transform: skewX(-10deg);
+  animation: rampSweep 6s ease-in-out infinite;
 }
-@keyframes rampLight {
-  0%   { left: -100% }
-  38%  { left: 160% }
-  100% { left: 160% }
+@keyframes rampSweep {
+  0%   { left: -90%; }
+  42%  { left: 150%; }
+  100% { left: 150%; }
 }
 
 .cl-arm {
@@ -306,27 +336,24 @@ img, svg { display: block; }
   pointer-events: none;
 }
 
-#nav {
+/* Floating logo — no bar, no background */
+#logo-mark {
   position: fixed; top: 0; left: 0; right: 0;
   height: var(--nav-h);
   display: flex; align-items: center;
   padding: 0 clamp(1.25rem, 5vw, 4rem);
   z-index: 700;
-  transition: background 0.4s, border-color 0.4s;
+  pointer-events: none;
 }
-#nav.scrolled {
-  background: rgba(12,12,12,0.92);
-  backdrop-filter: blur(14px);
-  border-bottom: 1px solid var(--line);
-}
-
-.nav-logo {
+.logo-text {
   font-family: var(--ff-display);
   font-size: 1.25rem;
   letter-spacing: 0.08em;
   color: var(--white);
+  pointer-events: auto;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.6);
 }
-.nav-logo span { color: var(--red); }
+.logo-text span { color: var(--red); }
 
 /* ---- Hero ---- */
 #hero {
@@ -615,10 +642,10 @@ img, svg { display: block; }
 #film-cursor {
   position: fixed;
   top: 0; left: 0;
-  width: 44px; height: 72px;
+  width: 46px; height: 92px;
   pointer-events: none;
   z-index: 99999;
-  transform: translate(-22px, -20px);
+  transform: translate(-23px, -22px);
   opacity: 0;
   transition: opacity 0.3s;
 }
