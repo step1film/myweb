@@ -1,296 +1,305 @@
-/* ============================================================
-   FILMMAKER PORTFOLIO — JavaScript
-   ============================================================ */
-
 (function () {
   'use strict';
 
-  /* ---- Film Grain ---- */
+  let clapFired    = false;
+  let entranceDone = false;
+
+  /* --------------------------------------------------
+     FILM GRAIN
+  -------------------------------------------------- */
   function initGrain() {
-    const canvas = document.getElementById('grain');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    let animId;
-
-    function resize() {
-      canvas.width  = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-
-    function drawGrain() {
-      const w = canvas.width;
-      const h = canvas.height;
-      const imgData = ctx.createImageData(w, h);
-      const buf = imgData.data;
-
-      for (let i = 0; i < buf.length; i += 4) {
-        const v = (Math.random() * 255) | 0;
-        buf[i]     = v;
-        buf[i + 1] = v;
-        buf[i + 2] = v;
-        buf[i + 3] = 255;
-      }
-
-      ctx.putImageData(imgData, 0, 0);
-    }
-
+    const c = document.getElementById('grain');
+    if (!c) return;
+    const ctx = c.getContext('2d');
+    function resize() { c.width = innerWidth; c.height = innerHeight; }
     function tick() {
-      drawGrain();
-      animId = requestAnimationFrame(tick);
+      const w = c.width, h = c.height;
+      const img = ctx.createImageData(w, h);
+      const d   = img.data;
+      for (let i = 0; i < d.length; i += 4) {
+        const v = (Math.random() * 255) | 0;
+        d[i] = d[i+1] = d[i+2] = v;
+        d[i+3] = 255;
+      }
+      ctx.putImageData(img, 0, 0);
+      requestAnimationFrame(tick);
     }
-
     resize();
     tick();
-    window.addEventListener('resize', resize);
+    addEventListener('resize', resize);
   }
 
-  /* ---- Letterbox intro ---- */
-  function initIntro() {
-    document.body.classList.add('intro');
-    requestAnimationFrame(() => {
-      setTimeout(() => {
-        document.body.classList.remove('intro');
-        document.body.classList.add('loaded');
-      }, 800);
-    });
+  /* --------------------------------------------------
+     SYNTHESISED CLAP SOUND
+  -------------------------------------------------- */
+  function playClap() {
+    try {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
+      const ctx = new AC();
+      const sr  = ctx.sampleRate;
+      const len = (sr * 0.18) | 0;
+      const buf = ctx.createBuffer(1, len, sr);
+      const data = buf.getChannelData(0);
+      for (let i = 0; i < len; i++) {
+        const t = i / sr;
+        data[i] = (Math.random() * 2 - 1) * Math.exp(-t * 85) * 1.2;
+      }
+      const noise = ctx.createBufferSource();
+      noise.buffer = buf;
+      const hp = ctx.createBiquadFilter();
+      hp.type = 'highpass'; hp.frequency.value = 900;
+      const bp = ctx.createBiquadFilter();
+      bp.type = 'peaking'; bp.frequency.value = 2400; bp.Q.value = 1.2; bp.gain.value = 8;
+      const noiseGain = ctx.createGain();
+      noiseGain.gain.setValueAtTime(1.4, ctx.currentTime);
+      noiseGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.18);
+      noise.connect(hp); hp.connect(bp); bp.connect(noiseGain);
+      noiseGain.connect(ctx.destination);
+      noise.start(ctx.currentTime);
+      const osc = ctx.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(200, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(55, ctx.currentTime + 0.045);
+      const oscGain = ctx.createGain();
+      oscGain.gain.setValueAtTime(0.9, ctx.currentTime);
+      oscGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.06);
+      osc.connect(oscGain); oscGain.connect(ctx.destination);
+      osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.07);
+    } catch (e) { /* audio blocked */ }
   }
 
-  /* ---- Navigation scroll state ---- */
-  function initNav() {
-    const nav = document.getElementById('nav');
-    const toggle = nav.querySelector('.nav-toggle');
+  /* --------------------------------------------------
+     COUNTDOWN LOADER
+  -------------------------------------------------- */
+  function initLoader(onDone) {
+    const loader = document.getElementById('loader');
+    const numEl  = document.getElementById('ldNum');
+    const bar    = document.querySelector('.ld-progress');
+    if (!loader) { onDone(); return; }
+    const CIRC = 314, STEPS = 5;
+    let n = STEPS;
+    function set(num) {
+      numEl.textContent = num > 0 ? num : '';
+      const offset = CIRC - CIRC * ((STEPS - num + 1) / STEPS);
+      bar.style.strokeDashoffset = String(Math.max(0, offset));
+    }
+    set(STEPS);
+    const iv = setInterval(() => {
+      n--;
+      if (n <= 0) {
+        clearInterval(iv);
+        bar.style.strokeDashoffset = '0';
+        numEl.textContent = '';
+        setTimeout(() => { loader.classList.add('out'); setTimeout(onDone, 500); }, 250);
+      } else { set(n); }
+    }, 900);
+  }
+
+  /* --------------------------------------------------
+     CLAPPERBOARD 3D ENTRANCE
+  -------------------------------------------------- */
+  function initClapperEntrance(clapper, onDone) {
+    const DURATION = 1100;
+    clapper.style.opacity   = '0';
+    clapper.style.transform = 'perspective(900px) rotateX(10deg) rotateY(-6deg) scale(0.91)';
+    const start = performance.now();
+    function frame(ts) {
+      const t    = Math.min(1, (ts - start) / DURATION);
+      const ease = 1 - Math.pow(1 - t, 3);
+      clapper.style.opacity   = String(ease);
+      clapper.style.transform = `perspective(900px) rotateX(${10*(1-ease)}deg) rotateY(${-6*(1-ease)}deg) scale(${0.91+0.09*ease})`;
+      if (t < 1) { requestAnimationFrame(frame); }
+      else { clapper.style.transform = ''; entranceDone = true; onDone(); }
+    }
+    requestAnimationFrame(frame);
+  }
+
+  /* --------------------------------------------------
+     SCROLL DRIVER
+  -------------------------------------------------- */
+  function initScrollDriver() {
+    const clapper  = document.getElementById('clapper');
+    const arm      = document.getElementById('clapperArm');
+    const hWrapper = document.getElementById('h-wrapper');
+    const panels   = Array.from(document.querySelectorAll('.h-panel'));
+    const dots     = Array.from(document.querySelectorAll('.h-dot'));
+    const curEl    = document.getElementById('hCur');
+    const labelEl  = document.getElementById('hLabel');
+    const prevBtn  = document.getElementById('hPrev');
+    const nextBtn  = document.getElementById('hNext');
+    if (!clapper || !arm || !hWrapper || !panels.length) return;
+
+    const LABELS = ['Films', 'About', 'Awards', 'Contact'];
+    const TOTAL  = panels.length;
+    function fmt(n) { return String(n + 1).padStart(2, '0'); }
+    let lastPanelIdx = -1;
 
     function onScroll() {
-      nav.classList.toggle('scrolled', window.scrollY > 60);
-    }
+      const vh = window.innerHeight;
+      const sy = window.scrollY;
 
-    toggle.addEventListener('click', () => {
-      nav.classList.toggle('open');
-      document.body.style.overflow = nav.classList.contains('open') ? 'hidden' : '';
-    });
+      /* Clapperboard zone: scrollY 0 → vh */
+      const clapP = sy / vh;
+      if (clapP < 1) {
+        clapper.style.display = '';
+        clapper.style.opacity = '1';
+        const armP     = Math.min(1, clapP / 0.25);
+        const armAngle = -16 * (1 - armP);
+        arm.style.transform = `rotate(${armAngle}deg)`;
+        if (armP >= 1 && !clapFired) { clapFired = true; playClap(); }
+        if (armP < 0.85) clapFired = false;
+        const slideP = Math.max(0, Math.min(1, (clapP - 0.3) / 0.7));
+        clapper.style.transform = `translateY(${-slideP * 100}vh)`;
+      } else {
+        clapper.style.display = 'none';
+      }
 
-    nav.querySelectorAll('.nav-links a').forEach(link => {
-      link.addEventListener('click', () => {
-        nav.classList.remove('open');
-        document.body.style.overflow = '';
+      /* Wipe panels */
+      const scrolledIn = -hWrapper.getBoundingClientRect().top;
+      panels.forEach((panel, i) => {
+        if (i === 0) return;
+        const progress = Math.max(0, Math.min(1, (scrolledIn - (i-1)*vh) / vh));
+        panel.style.clipPath = `inset(0 0 0 ${(1-progress)*100}%)`;
       });
-    });
+
+      /* Nav sync */
+      const panelIdx = Math.min(TOTAL-1, Math.max(0, Math.floor(scrolledIn / vh)));
+      if (panelIdx !== lastPanelIdx) {
+        lastPanelIdx = panelIdx;
+        dots.forEach((d, i) => d.classList.toggle('active', i === panelIdx));
+        if (curEl)   curEl.textContent   = fmt(panelIdx);
+        if (labelEl) labelEl.textContent = LABELS[panelIdx] || '';
+      }
+      if (prevBtn) prevBtn.disabled = panelIdx <= 0 && scrolledIn <= 0;
+      if (nextBtn) nextBtn.disabled = panelIdx >= TOTAL-1 && scrolledIn >= (TOTAL-1)*vh;
+    }
 
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
-  }
 
-  /* ---- Scroll reveal ---- */
-  function initReveal() {
-    const els = document.querySelectorAll('.reveal');
-
-    if (!('IntersectionObserver' in window)) {
-      els.forEach(el => el.classList.add('visible'));
-      return;
+    function goToPanel(idx) {
+      idx = Math.max(0, Math.min(TOTAL-1, idx));
+      window.scrollTo({ top: hWrapper.offsetTop + idx * window.innerHeight, behavior: 'smooth' });
     }
 
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry, i) => {
-        if (entry.isIntersecting) {
-          const delay = entry.target.dataset.delay || 0;
-          setTimeout(() => {
-            entry.target.classList.add('visible');
-          }, delay);
-          observer.unobserve(entry.target);
+    dots.forEach(dot => dot.addEventListener('click', () => goToPanel(parseInt(dot.dataset.i, 10))));
+
+    if (prevBtn) prevBtn.addEventListener('click', () => {
+      const cur = Math.min(TOTAL-1, Math.max(0, Math.floor(-hWrapper.getBoundingClientRect().top / window.innerHeight)));
+      goToPanel(cur - 1);
+    });
+    if (nextBtn) nextBtn.addEventListener('click', () => {
+      const cur = Math.min(TOTAL-1, Math.max(0, Math.floor(-hWrapper.getBoundingClientRect().top / window.innerHeight)));
+      goToPanel(cur + 1);
+    });
+
+    window.addEventListener('keydown', e => {
+      const scrolledIn = -hWrapper.getBoundingClientRect().top;
+      if (scrolledIn < -100 || scrolledIn > (TOTAL-1)*window.innerHeight + 200) return;
+      const cur = Math.min(TOTAL-1, Math.max(0, Math.floor(scrolledIn / window.innerHeight)));
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); goToPanel(cur+1); }
+      if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   { e.preventDefault(); goToPanel(cur-1); }
+    });
+
+    const sticky = document.getElementById('h-sticky');
+    if (sticky) {
+      let tx = 0, ty = 0;
+      sticky.addEventListener('touchstart', e => { tx = e.touches[0].clientX; ty = e.touches[0].clientY; }, { passive: true });
+      sticky.addEventListener('touchend', e => {
+        const dx = e.changedTouches[0].clientX - tx;
+        const dy = e.changedTouches[0].clientY - ty;
+        if (Math.abs(dx) < 40 && Math.abs(dy) < 40) return;
+        if (Math.abs(dx) > Math.abs(dy)) {
+          const cur = Math.min(TOTAL-1, Math.max(0, Math.floor(-hWrapper.getBoundingClientRect().top / window.innerHeight)));
+          goToPanel(dx < 0 ? cur+1 : cur-1);
         }
-      });
-    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
-
-    els.forEach((el, i) => {
-      el.dataset.delay = (i % 4) * 90;
-      observer.observe(el);
-    });
-  }
-
-  /* ---- Film cards stagger ---- */
-  function initFilmCards() {
-    const cards = document.querySelectorAll('.film-card');
-    cards.forEach((card, i) => {
-      card.style.transitionDelay = `${i * 0.07}s`;
-    });
-  }
-
-  /* ---- Award items stagger ---- */
-  function initAwardItems() {
-    const items = document.querySelectorAll('.award-item');
-    items.forEach((item, i) => {
-      item.style.transitionDelay = `${i * 0.08}s`;
-    });
-  }
-
-  /* ---- Smooth parallax on hero background ---- */
-  function initParallax() {
-    const hero = document.getElementById('hero');
-    if (!hero) return;
-    const reel = hero.querySelector('.hero-reel');
-
-    function onScroll() {
-      const scrollY = window.scrollY;
-      if (scrollY > window.innerHeight) return;
-      const factor = scrollY * 0.3;
-      if (reel) reel.style.transform = `translateY(${factor}px)`;
+      }, { passive: true });
     }
-
-    window.addEventListener('scroll', onScroll, { passive: true });
   }
 
-  /* ---- Animated stat counters ---- */
-  function initCounters() {
-    const stats = document.querySelectorAll('.stat-number');
-
-    function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
-
-    function animateCounter(el) {
-      const raw   = el.textContent.trim();
-      const num   = parseFloat(raw);
-      const suffix = raw.replace(/[\d.]/g, '');
-      const duration = 1400;
-      let start = null;
-
-      function step(ts) {
-        if (!start) start = ts;
-        const p = Math.min((ts - start) / duration, 1);
-        const current = Math.round(easeOut(p) * num);
-        el.textContent = current + suffix;
-        if (p < 1) requestAnimationFrame(step);
-      }
-
-      requestAnimationFrame(step);
-    }
-
-    if (!('IntersectionObserver' in window)) return;
-
-    const obs = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          animateCounter(entry.target);
-          obs.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.5 });
-
-    stats.forEach(el => obs.observe(el));
+  /* --------------------------------------------------
+     NAV
+  -------------------------------------------------- */
+  function initNav() {
+    const nav = document.getElementById('nav');
+    if (!nav) return;
+    addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 60), { passive: true });
   }
 
-  /* ---- Custom cursor dot ---- */
+  /* --------------------------------------------------
+     FILM REEL CURSOR
+  -------------------------------------------------- */
   function initCursor() {
-    if (window.matchMedia('(hover: none)').matches) return;
-
-    const dot = document.createElement('div');
-    dot.style.cssText = `
-      position: fixed;
-      width: 8px;
-      height: 8px;
-      background: rgba(200,146,42,0.8);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 9999;
-      transform: translate(-50%, -50%);
-      transition: width 0.3s, height 0.3s, opacity 0.3s, background 0.3s;
-      mix-blend-mode: screen;
-    `;
-    document.body.appendChild(dot);
-
-    const ring = document.createElement('div');
-    ring.style.cssText = `
-      position: fixed;
-      width: 36px;
-      height: 36px;
-      border: 1px solid rgba(200,146,42,0.35);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 9998;
-      transform: translate(-50%, -50%);
-      transition: width 0.5s cubic-bezier(0.16,1,0.3,1),
-                  height 0.5s cubic-bezier(0.16,1,0.3,1),
-                  top 0.12s linear, left 0.12s linear;
-    `;
-    document.body.appendChild(ring);
-
-    let mx = -100, my = -100;
-
-    document.addEventListener('mousemove', e => {
-      mx = e.clientX; my = e.clientY;
-      dot.style.left  = mx + 'px';
-      dot.style.top   = my + 'px';
-      ring.style.left = mx + 'px';
-      ring.style.top  = my + 'px';
+    if (window.matchMedia('(hover:none)').matches) return;
+    const el = document.createElement('div');
+    el.id = 'film-cursor';
+    el.innerHTML = `<svg viewBox="0 0 44 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="19" y="35" width="6" height="37" fill="#1a1a1a" rx="0.5"/>
+      <rect x="20" y="37" width="4" height="3"   fill="none" stroke="#444" stroke-width="0.4"/>
+      <rect x="20" y="42" width="4" height="3"   fill="none" stroke="#444" stroke-width="0.4"/>
+      <rect x="20" y="47" width="4" height="3"   fill="none" stroke="#444" stroke-width="0.4"/>
+      <rect x="20" y="52" width="4" height="3"   fill="none" stroke="#444" stroke-width="0.4"/>
+      <rect x="20" y="57" width="4" height="3"   fill="none" stroke="#444" stroke-width="0.4"/>
+      <rect x="20" y="62" width="4" height="3"   fill="none" stroke="#444" stroke-width="0.4"/>
+      <rect x="19"   y="38"  width="0.9" height="1.4" fill="#383838"/>
+      <rect x="19"   y="43"  width="0.9" height="1.4" fill="#383838"/>
+      <rect x="19"   y="48"  width="0.9" height="1.4" fill="#383838"/>
+      <rect x="19"   y="53"  width="0.9" height="1.4" fill="#383838"/>
+      <rect x="19"   y="58"  width="0.9" height="1.4" fill="#383838"/>
+      <rect x="24.1" y="38"  width="0.9" height="1.4" fill="#383838"/>
+      <rect x="24.1" y="43"  width="0.9" height="1.4" fill="#383838"/>
+      <rect x="24.1" y="48"  width="0.9" height="1.4" fill="#383838"/>
+      <rect x="24.1" y="53"  width="0.9" height="1.4" fill="#383838"/>
+      <rect x="24.1" y="58"  width="0.9" height="1.4" fill="#383838"/>
+      <g id="reel-disc">
+        <circle cx="22" cy="20" r="18" fill="#111" stroke="#d8d8d8" stroke-width="0.7"/>
+        <circle cx="22" cy="20" r="13.5" fill="none" stroke="#2a2a2a" stroke-width="3.2" stroke-dasharray="2.4 3.0"/>
+        <line x1="22" y1="20" x2="22"   y2="3.5"  stroke="#c8c8c8" stroke-width="0.75"/>
+        <line x1="22" y1="20" x2="7.3"  y2="28.3" stroke="#c8c8c8" stroke-width="0.75"/>
+        <line x1="22" y1="20" x2="36.7" y2="28.3" stroke="#c8c8c8" stroke-width="0.75"/>
+        <circle cx="22"   cy="4.8"  r="2.4" fill="#1a1a1a" stroke="#c8c8c8" stroke-width="0.65"/>
+        <circle cx="8.5"  cy="28.9" r="2.4" fill="#1a1a1a" stroke="#c8c8c8" stroke-width="0.65"/>
+        <circle cx="35.5" cy="28.9" r="2.4" fill="#1a1a1a" stroke="#c8c8c8" stroke-width="0.65"/>
+        <circle cx="22" cy="20" r="3.4" fill="#0c0c0c" stroke="#c8c8c8" stroke-width="0.65"/>
+        <circle cx="22" cy="20" r="1.1" fill="#d8d8d8"/>
+      </g>
+    </svg>`;
+    document.body.appendChild(el);
+    const disc = el.querySelector('#reel-disc');
+    let angle = 0, velocity = 0, lastX = 0, lastY = 0;
+    window.addEventListener('mousemove', e => {
+      const dx = e.clientX - lastX, dy = e.clientY - lastY;
+      velocity = Math.sqrt(dx*dx + dy*dy) * 1.8;
+      lastX = e.clientX; lastY = e.clientY;
+      el.style.left = e.clientX + 'px';
+      el.style.top  = e.clientY + 'px';
+      el.classList.add('visible');
     });
-
-    document.querySelectorAll('a, button, .film-card').forEach(el => {
-      el.addEventListener('mouseenter', () => {
-        dot.style.width   = '14px';
-        dot.style.height  = '14px';
-        ring.style.width  = '56px';
-        ring.style.height = '56px';
-      });
-      el.addEventListener('mouseleave', () => {
-        dot.style.width   = '8px';
-        dot.style.height  = '8px';
-        ring.style.width  = '36px';
-        ring.style.height = '36px';
-      });
-    });
-  }
-
-  /* ---- Cinematic page transition (internal links) ---- */
-  function initPageFade() {
-    const overlay = document.createElement('div');
-    overlay.style.cssText = `
-      position: fixed; inset: 0;
-      background: #0a0805;
-      z-index: 2000;
-      opacity: 1;
-      pointer-events: none;
-      transition: opacity 0.8s cubic-bezier(0.16,1,0.3,1);
-    `;
-    document.body.appendChild(overlay);
-
-    requestAnimationFrame(() => {
-      setTimeout(() => { overlay.style.opacity = '0'; }, 50);
-    });
-  }
-
-  /* ---- Active nav link highlight on scroll ---- */
-  function initActiveNav() {
-    const sections = ['films','about','awards','contact'].map(id => document.getElementById(id));
-    const links = document.querySelectorAll('.nav-links a');
-
-    function getActive() {
-      const mid = window.scrollY + window.innerHeight / 2;
-      let active = null;
-      sections.forEach(sec => {
-        if (sec && sec.offsetTop <= mid) active = sec.id;
-      });
-      return active;
+    function spin() {
+      velocity *= 0.91;
+      angle    += Math.max(0.25, velocity);
+      if (angle >= 360) angle -= 360;
+      disc.setAttribute('transform', `rotate(${angle}, 22, 20)`);
+      requestAnimationFrame(spin);
     }
-
-    window.addEventListener('scroll', () => {
-      const id = getActive();
-      links.forEach(a => {
-        a.style.color = a.getAttribute('href') === `#${id}` ? 'var(--amber-light)' : '';
-      });
-    }, { passive: true });
+    spin();
   }
 
-  /* ---- Init ---- */
+  /* --------------------------------------------------
+     BOOT SEQUENCE
+  -------------------------------------------------- */
   document.addEventListener('DOMContentLoaded', () => {
     initGrain();
-    initIntro();
-    initNav();
-    initReveal();
-    initFilmCards();
-    initAwardItems();
-    initParallax();
-    initCounters();
     initCursor();
-    initPageFade();
-    initActiveNav();
+    initNav();
+    const clapper = document.getElementById('clapper');
+    initLoader(() => {
+      initClapperEntrance(clapper, () => {
+        initScrollDriver();
+        document.body.classList.remove('is-loading');
+      });
+    });
   });
 
 })();
