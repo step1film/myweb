@@ -42,77 +42,79 @@
        02. CLAPPERBOARD
   ====================================================== -->
   <div id="clapper" aria-hidden="true">
+    <div class="cl-scene">
 
-    <!-- Studio ramp light -->
-    <div class="cl-ramp" aria-hidden="true"></div>
+      <!-- Studio ramp light -->
+      <div class="cl-ramp" aria-hidden="true"></div>
 
-    <!-- The striped arm — pivots at bottom-left (hinge) -->
-    <div class="cl-arm" id="clapperArm">
-      <div class="cl-arm-stripes" aria-hidden="true"></div>
-      <div class="cl-arm-info">
-        <span>STEP1FILM</span>
-        <span>AYMAN HASSDO</span>
-      </div>
-    </div>
-
-    <!-- Hinge rule (stays fixed) -->
-    <div class="cl-hinge" aria-hidden="true">
-      <span class="cl-hinge-dot left"  aria-hidden="true"></span>
-      <span class="cl-hinge-dot right" aria-hidden="true"></span>
-    </div>
-
-    <!-- Board body -->
-    <div class="cl-board">
-      <div class="cl-brand">
-        STEP<em>1</em>FILM
-      </div>
-
-      <div class="cl-grid">
-        <div class="cl-cell wide">
-          <span class="cl-key">PRODUCTION</span>
-          <span class="cl-val">STEP1FILM STUDIOS</span>
-        </div>
-        <div class="cl-cell">
-          <span class="cl-key">ROLL</span>
-          <span class="cl-val">01</span>
-        </div>
-
-        <div class="cl-cell wide">
-          <span class="cl-key">DIRECTOR</span>
-          <span class="cl-val">AYMAN HASSDO</span>
-        </div>
-        <div class="cl-cell">
-          <span class="cl-key">CAMERA / DP</span>
-          <span class="cl-val">AYMAN HASSDO</span>
-        </div>
-
-        <div class="cl-cell">
-          <span class="cl-key">SCENE</span>
-          <span class="cl-val">001</span>
-        </div>
-        <div class="cl-cell">
-          <span class="cl-key">TAKE</span>
-          <span class="cl-val">01</span>
-        </div>
-        <div class="cl-cell">
-          <span class="cl-key">DATE</span>
-          <span class="cl-val">2026</span>
-        </div>
-        <div class="cl-cell">
-          <span class="cl-key">DAY / NIGHT</span>
-          <span class="cl-val">NIGHT</span>
+      <!-- The striped arm — pivots at bottom-left (hinge) -->
+      <div class="cl-arm" id="clapperArm">
+        <div class="cl-arm-stripes" aria-hidden="true"></div>
+        <div class="cl-arm-info">
+          <span>STEP1FILM</span>
+          <span>AYMAN HASSDO</span>
         </div>
       </div>
 
-      <div class="cl-hint">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-          <line x1="12" y1="4" x2="12" y2="20"/>
-          <polyline points="6,14 12,20 18,14"/>
-        </svg>
-        SCROLL TO BEGIN
+      <!-- Hinge rule (stays fixed) -->
+      <div class="cl-hinge" aria-hidden="true">
+        <span class="cl-hinge-dot left"  aria-hidden="true"></span>
+        <span class="cl-hinge-dot right" aria-hidden="true"></span>
       </div>
-    </div>
 
+      <!-- Board body -->
+      <div class="cl-board">
+        <div class="cl-brand">
+          STEP<em>1</em>FILM
+        </div>
+
+        <div class="cl-grid">
+          <div class="cl-cell wide">
+            <span class="cl-key">PRODUCTION</span>
+            <span class="cl-val">STEP1FILM STUDIOS</span>
+          </div>
+          <div class="cl-cell">
+            <span class="cl-key">ROLL</span>
+            <span class="cl-val">01</span>
+          </div>
+
+          <div class="cl-cell wide">
+            <span class="cl-key">DIRECTOR</span>
+            <span class="cl-val">AYMAN HASSDO</span>
+          </div>
+          <div class="cl-cell">
+            <span class="cl-key">CAMERA / DP</span>
+            <span class="cl-val">AYMAN HASSDO</span>
+          </div>
+
+          <div class="cl-cell">
+            <span class="cl-key">SCENE</span>
+            <span class="cl-val">001</span>
+          </div>
+          <div class="cl-cell">
+            <span class="cl-key">TAKE</span>
+            <span class="cl-val">01</span>
+          </div>
+          <div class="cl-cell">
+            <span class="cl-key">DATE</span>
+            <span class="cl-val">2026</span>
+          </div>
+          <div class="cl-cell">
+            <span class="cl-key">DAY / NIGHT</span>
+            <span class="cl-val">NIGHT</span>
+          </div>
+        </div>
+
+        <div class="cl-hint">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+            <line x1="12" y1="4" x2="12" y2="20"/>
+            <polyline points="6,14 12,20 18,14"/>
+          </svg>
+          SCROLL TO BEGIN
+        </div>
+      </div>
+
+    </div><!-- .cl-scene -->
   </div><!-- #clapper -->
 
   <!-- =====================================================
@@ -120,12 +122,10 @@
   ====================================================== -->
   <div id="page">
 
-    <!-- NAV — logo only -->
-    <nav id="nav">
-      <a href="#hero" class="nav-logo">
-        STEP<span>1</span>FILM
-      </a>
-    </nav>
+    <!-- Logo mark — floating, no nav bar -->
+    <div id="logo-mark">
+      <a href="#hero" class="logo-text">STEP<span>1</span>FILM</a>
+    </div>
 
     <!-- Clapper scroll zone — 100vh spacer that drives the clapperboard -->
     <div id="clapper-zone" aria-hidden="true"></div>

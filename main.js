@@ -1,8 +1,7 @@
 (function () {
   'use strict';
 
-  let clapFired    = false;
-  let entranceDone = false;
+  let clapFired = false;
 
   /* --------------------------------------------------
      FILM GRAIN
@@ -94,25 +93,6 @@
         setTimeout(() => { loader.classList.add('out'); setTimeout(onDone, 500); }, 250);
       } else { set(n); }
     }, 900);
-  }
-
-  /* --------------------------------------------------
-     CLAPPERBOARD 3D ENTRANCE
-  -------------------------------------------------- */
-  function initClapperEntrance(clapper, onDone) {
-    const DURATION = 1100;
-    clapper.style.opacity   = '0';
-    clapper.style.transform = 'perspective(900px) rotateX(10deg) rotateY(-6deg) scale(0.91)';
-    const start = performance.now();
-    function frame(ts) {
-      const t    = Math.min(1, (ts - start) / DURATION);
-      const ease = 1 - Math.pow(1 - t, 3);
-      clapper.style.opacity   = String(ease);
-      clapper.style.transform = `perspective(900px) rotateX(${10*(1-ease)}deg) rotateY(${-6*(1-ease)}deg) scale(${0.91+0.09*ease})`;
-      if (t < 1) { requestAnimationFrame(frame); }
-      else { clapper.style.transform = ''; entranceDone = true; onDone(); }
-    }
-    requestAnimationFrame(frame);
   }
 
   /* --------------------------------------------------
@@ -219,50 +199,59 @@
   }
 
   /* --------------------------------------------------
-     NAV
-  -------------------------------------------------- */
-  function initNav() {
-    const nav = document.getElementById('nav');
-    if (!nav) return;
-    addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 60), { passive: true });
-  }
-
-  /* --------------------------------------------------
-     FILM REEL CURSOR
+     FILM REEL CURSOR — 32mm with hanging strip
   -------------------------------------------------- */
   function initCursor() {
     if (window.matchMedia('(hover:none)').matches) return;
     const el = document.createElement('div');
     el.id = 'film-cursor';
-    el.innerHTML = `<svg viewBox="0 0 44 72" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="19" y="35" width="6" height="37" fill="#1a1a1a" rx="0.5"/>
-      <rect x="20" y="37" width="4" height="3"   fill="none" stroke="#444" stroke-width="0.4"/>
-      <rect x="20" y="42" width="4" height="3"   fill="none" stroke="#444" stroke-width="0.4"/>
-      <rect x="20" y="47" width="4" height="3"   fill="none" stroke="#444" stroke-width="0.4"/>
-      <rect x="20" y="52" width="4" height="3"   fill="none" stroke="#444" stroke-width="0.4"/>
-      <rect x="20" y="57" width="4" height="3"   fill="none" stroke="#444" stroke-width="0.4"/>
-      <rect x="20" y="62" width="4" height="3"   fill="none" stroke="#444" stroke-width="0.4"/>
-      <rect x="19"   y="38"  width="0.9" height="1.4" fill="#383838"/>
-      <rect x="19"   y="43"  width="0.9" height="1.4" fill="#383838"/>
-      <rect x="19"   y="48"  width="0.9" height="1.4" fill="#383838"/>
-      <rect x="19"   y="53"  width="0.9" height="1.4" fill="#383838"/>
-      <rect x="19"   y="58"  width="0.9" height="1.4" fill="#383838"/>
-      <rect x="24.1" y="38"  width="0.9" height="1.4" fill="#383838"/>
-      <rect x="24.1" y="43"  width="0.9" height="1.4" fill="#383838"/>
-      <rect x="24.1" y="48"  width="0.9" height="1.4" fill="#383838"/>
-      <rect x="24.1" y="53"  width="0.9" height="1.4" fill="#383838"/>
-      <rect x="24.1" y="58"  width="0.9" height="1.4" fill="#383838"/>
+    el.innerHTML = `<svg viewBox="0 0 46 92" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Hanging film strip -->
+      <rect x="19.5" y="43" width="7" height="49" fill="#141414"/>
+      <!-- Left sprocket holes -->
+      <rect x="20"   y="46.5" width="1.8" height="2.8" fill="#070707" rx="0.35"/>
+      <rect x="20"   y="53"   width="1.8" height="2.8" fill="#070707" rx="0.35"/>
+      <rect x="20"   y="59.5" width="1.8" height="2.8" fill="#070707" rx="0.35"/>
+      <rect x="20"   y="66"   width="1.8" height="2.8" fill="#070707" rx="0.35"/>
+      <rect x="20"   y="72.5" width="1.8" height="2.8" fill="#070707" rx="0.35"/>
+      <rect x="20"   y="79"   width="1.8" height="2.8" fill="#070707" rx="0.35"/>
+      <rect x="20"   y="85.5" width="1.8" height="2.8" fill="#070707" rx="0.35"/>
+      <!-- Right sprocket holes -->
+      <rect x="24.2" y="46.5" width="1.8" height="2.8" fill="#070707" rx="0.35"/>
+      <rect x="24.2" y="53"   width="1.8" height="2.8" fill="#070707" rx="0.35"/>
+      <rect x="24.2" y="59.5" width="1.8" height="2.8" fill="#070707" rx="0.35"/>
+      <rect x="24.2" y="66"   width="1.8" height="2.8" fill="#070707" rx="0.35"/>
+      <rect x="24.2" y="72.5" width="1.8" height="2.8" fill="#070707" rx="0.35"/>
+      <rect x="24.2" y="79"   width="1.8" height="2.8" fill="#070707" rx="0.35"/>
+      <rect x="24.2" y="85.5" width="1.8" height="2.8" fill="#070707" rx="0.35"/>
+      <!-- Frame image areas -->
+      <rect x="22.1" y="45.5" width="1.8" height="4.2" fill="#1c1c1c"/>
+      <rect x="22.1" y="52"   width="1.8" height="4.2" fill="#1c1c1c"/>
+      <rect x="22.1" y="58.5" width="1.8" height="4.2" fill="#1c1c1c"/>
+      <rect x="22.1" y="65"   width="1.8" height="4.2" fill="#1c1c1c"/>
+      <rect x="22.1" y="71.5" width="1.8" height="4.2" fill="#1c1c1c"/>
+      <rect x="22.1" y="78"   width="1.8" height="4.2" fill="#1c1c1c"/>
+      <rect x="22.1" y="84.5" width="1.8" height="4.2" fill="#1c1c1c"/>
+      <!-- 32mm film reel disc -->
       <g id="reel-disc">
-        <circle cx="22" cy="20" r="18" fill="#111" stroke="#d8d8d8" stroke-width="0.7"/>
-        <circle cx="22" cy="20" r="13.5" fill="none" stroke="#2a2a2a" stroke-width="3.2" stroke-dasharray="2.4 3.0"/>
-        <line x1="22" y1="20" x2="22"   y2="3.5"  stroke="#c8c8c8" stroke-width="0.75"/>
-        <line x1="22" y1="20" x2="7.3"  y2="28.3" stroke="#c8c8c8" stroke-width="0.75"/>
-        <line x1="22" y1="20" x2="36.7" y2="28.3" stroke="#c8c8c8" stroke-width="0.75"/>
-        <circle cx="22"   cy="4.8"  r="2.4" fill="#1a1a1a" stroke="#c8c8c8" stroke-width="0.65"/>
-        <circle cx="8.5"  cy="28.9" r="2.4" fill="#1a1a1a" stroke="#c8c8c8" stroke-width="0.65"/>
-        <circle cx="35.5" cy="28.9" r="2.4" fill="#1a1a1a" stroke="#c8c8c8" stroke-width="0.65"/>
-        <circle cx="22" cy="20" r="3.4" fill="#0c0c0c" stroke="#c8c8c8" stroke-width="0.65"/>
-        <circle cx="22" cy="20" r="1.1" fill="#d8d8d8"/>
+        <!-- Outer rim -->
+        <circle cx="23" cy="22" r="20.5" fill="#0e0e0e" stroke="#bcbcbc" stroke-width="0.75"/>
+        <!-- Wide dark tire ring -->
+        <circle cx="23" cy="22" r="15.5" fill="none" stroke="#181818" stroke-width="9.5"/>
+        <!-- Sprocket dash ring -->
+        <circle cx="23" cy="22" r="19"   fill="none" stroke="#262626" stroke-width="2.2" stroke-dasharray="1.7 3.4"/>
+        <!-- 3 spokes -->
+        <line x1="23" y1="22" x2="23"   y2="2"    stroke="#a8a8a8" stroke-width="0.9"/>
+        <line x1="23" y1="22" x2="5.2"  y2="31"   stroke="#a8a8a8" stroke-width="0.9"/>
+        <line x1="23" y1="22" x2="40.8" y2="31"   stroke="#a8a8a8" stroke-width="0.9"/>
+        <!-- End caps on spokes -->
+        <circle cx="23"   cy="2"  r="2.2" fill="#111" stroke="#a8a8a8" stroke-width="0.6"/>
+        <circle cx="5.2"  cy="31" r="2.2" fill="#111" stroke="#a8a8a8" stroke-width="0.6"/>
+        <circle cx="40.8" cy="31" r="2.2" fill="#111" stroke="#a8a8a8" stroke-width="0.6"/>
+        <!-- Center hub -->
+        <circle cx="23" cy="22" r="5.2" fill="#0c0c0c" stroke="#a8a8a8" stroke-width="0.65"/>
+        <!-- Center pin -->
+        <circle cx="23" cy="22" r="1.6" fill="#cccccc"/>
       </g>
     </svg>`;
     document.body.appendChild(el);
@@ -280,7 +269,7 @@
       velocity *= 0.91;
       angle    += Math.max(0.25, velocity);
       if (angle >= 360) angle -= 360;
-      disc.setAttribute('transform', `rotate(${angle}, 22, 20)`);
+      disc.setAttribute('transform', `rotate(${angle}, 23, 22)`);
       requestAnimationFrame(spin);
     }
     spin();
@@ -292,13 +281,12 @@
   document.addEventListener('DOMContentLoaded', () => {
     initGrain();
     initCursor();
-    initNav();
     const clapper = document.getElementById('clapper');
     initLoader(() => {
-      initClapperEntrance(clapper, () => {
-        initScrollDriver();
-        document.body.classList.remove('is-loading');
-      });
+      /* Show clapper immediately — scroll drives everything from here */
+      clapper.style.opacity = '1';
+      document.body.classList.remove('is-loading');
+      initScrollDriver();
     });
   });
 
