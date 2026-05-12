@@ -138,10 +138,18 @@ img, svg { display: block; }
   perspective-origin: 50% 40%;
 }
 
-/* 3D scene — real stage photo background */
-.cl-scene {
+/* Static background layer — does not rotate with clapperboard */
+.cl-scene::before {
+  content: '';
   position: absolute; inset: 0;
   background: #050402 url('bg-stage.jpg') center 30% / cover no-repeat;
+  filter: blur(2px);
+  z-index: 0;
+}
+
+/* 3D scene — animates clapperboard only */
+.cl-scene {
+  position: absolute; inset: 0;
   transform-style: preserve-3d;
   animation: clapFloat 14s ease-in-out infinite;
 }
@@ -774,7 +782,7 @@ img, svg { display: block; }
 #film-cursor {
   position: fixed;
   top: 0; left: 0;
-  width: 48px; height: 48px;
+  width: 41px; height: 41px;
   pointer-events: none;
   z-index: 99999;
   will-change: transform;

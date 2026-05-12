@@ -216,7 +216,7 @@
     </svg>`;
     document.body.appendChild(el);
     window.addEventListener('mousemove', e => {
-      el.style.transform = `translate3d(${e.clientX - 22}px,${e.clientY - 22}px,0)`;
+      el.style.transform = `translate3d(${e.clientX - 20}px,${e.clientY - 20}px,0)`;
       if (!el.classList.contains('visible')) el.classList.add('visible');
     }, { passive: true });
   }
