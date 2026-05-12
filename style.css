@@ -740,7 +740,7 @@ img, svg { display: block; }
 #film-cursor {
   position: fixed;
   top: 0; left: 0;
-  width: 54px; height: 54px;
+  width: 48px; height: 48px;
   pointer-events: none;
   z-index: 99999;
   transform: translate(-22px, -22px);
