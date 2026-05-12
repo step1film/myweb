@@ -199,34 +199,24 @@
   }
 
   /* --------------------------------------------------
-     FILM REEL CURSOR — classic reel icon with strip
+     FILM REEL CURSOR — matches reference icon (Q-shape reel)
   -------------------------------------------------- */
   function initCursor() {
     if (window.matchMedia('(hover:none)').matches) return;
     const el = document.createElement('div');
     el.id = 'film-cursor';
-    el.innerHTML = `<svg viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <!-- Background disc -->
-      <circle cx="22" cy="22" r="22" fill="#0a0a0a"/>
-      <!-- Reel body -->
-      <circle cx="22" cy="22" r="19" fill="#f0f0f0"/>
-      <!-- Dark inner hub zone -->
-      <circle cx="22" cy="22" r="11" fill="#0a0a0a"/>
-      <!-- Center hub (white) -->
-      <circle cx="22" cy="22" r="4.5" fill="#f0f0f0"/>
-      <!-- 4 holes at N/E/S/W -->
-      <circle cx="22"  cy="4.5"  r="4.5" fill="#0a0a0a"/>
-      <circle cx="39.5" cy="22"  r="4.5" fill="#0a0a0a"/>
-      <circle cx="22"  cy="39.5" r="4.5" fill="#0a0a0a"/>
-      <circle cx="4.5"  cy="22"  r="4.5" fill="#0a0a0a"/>
-      <!-- Film strip hanging from bottom-right -->
-      <rect x="35" y="37" width="18" height="12" fill="#f0f0f0" rx="1.5"/>
-      <rect x="36.5" y="37"   width="2.8" height="3" fill="#0a0a0a" rx="0.4"/>
-      <rect x="41"   y="37"   width="2.8" height="3" fill="#0a0a0a" rx="0.4"/>
-      <rect x="45.5" y="37"   width="2.8" height="3" fill="#0a0a0a" rx="0.4"/>
-      <rect x="36.5" y="46"   width="2.8" height="3" fill="#0a0a0a" rx="0.4"/>
-      <rect x="41"   y="46"   width="2.8" height="3" fill="#0a0a0a" rx="0.4"/>
-      <rect x="45.5" y="46"   width="2.8" height="3" fill="#0a0a0a" rx="0.4"/>
+    el.innerHTML = `<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Outer disc -->
+      <circle cx="22" cy="22" r="22" fill="#f0f0f0"/>
+      <!-- 3 large holes (top, left, bottom — right hole replaced by strip cutout) -->
+      <circle cx="22" cy="7.5"  r="7.2" fill="#0c0c0c"/>
+      <circle cx="7.5"  cy="22" r="7.2" fill="#0c0c0c"/>
+      <circle cx="36.5" cy="22" r="7.2" fill="#0c0c0c"/>
+      <circle cx="22" cy="36.5" r="7.2" fill="#0c0c0c"/>
+      <!-- Center hub -->
+      <circle cx="22" cy="22" r="3.8" fill="#0c0c0c"/>
+      <!-- Film strip Q-tail (bottom-right protrusion) -->
+      <rect x="38" y="39" width="10" height="7" fill="#f0f0f0" rx="3.5"/>
     </svg>`;
     document.body.appendChild(el);
     window.addEventListener('mousemove', e => {
