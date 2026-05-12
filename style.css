@@ -141,7 +141,7 @@ img, svg { display: block; }
 /* 3D scene — dark studio atmosphere */
 .cl-scene {
   position: absolute; inset: 0;
-  background: #080604;
+  background: #050402;
   transform-style: preserve-3d;
   animation: clapFloat 14s ease-in-out infinite;
 }
@@ -159,43 +159,76 @@ img, svg { display: block; }
   position: absolute; inset: 0;
   pointer-events: none;
   z-index: 1;
-  overflow: hidden;
+  overflow: visible;
 }
 .cl-spot {
   position: absolute;
-  top: -2%;
-  width: 13%;
+  top: 0;
+  width: 7%;
   height: 90%;
-  background: linear-gradient(180deg,
-    rgba(255,205,95,0.24) 0%,
-    rgba(255,170,35,0.08) 55%,
-    transparent 100%);
-  filter: blur(24px);
   transform-origin: 50% 0%;
-  animation: spotFlicker 9s ease-in-out infinite;
+  /* no filter on parent so ::before and ::after can have independent sharpness */
 }
-.cl-spot--1 { left: 2%;   transform: rotate(-13deg); animation-delay:  0s; }
-.cl-spot--2 { left: 17%;  transform: rotate(-5deg);  animation-delay: -2.5s; }
-.cl-spot--3 { left: 44%;  transform: translateX(-50%) rotate(0deg); animation-delay: -4.5s; }
-.cl-spot--4 { right: 17%; transform: rotate(5deg);   animation-delay: -6s; }
-.cl-spot--5 { right: 2%;  transform: rotate(13deg);  animation-delay: -1s; }
+
+/* Bright lamp fixture source */
+.cl-spot::before {
+  content: '';
+  position: absolute;
+  top: -6px; left: 50%;
+  transform: translateX(-50%);
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: radial-gradient(circle,
+    rgba(255,255,230,1)   15%,
+    rgba(255,235,130,0.7) 50%,
+    transparent 82%);
+  filter: blur(4px);
+  z-index: 2;
+}
+
+/* Light cone beam */
+.cl-spot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg,
+    rgba(255,248,175,0.62) 0%,
+    rgba(255,210,75,0.26)  18%,
+    rgba(235,162,38,0.10)  52%,
+    rgba(170,110,20,0.03)  78%,
+    transparent 100%);
+  filter: blur(11px);
+}
+
+.cl-spot--1 { left: 3%;   animation: spotFlicker 9s  ease-in-out infinite  0.0s, spotSway1 19s ease-in-out infinite  0.0s; }
+.cl-spot--2 { left: 19%;  animation: spotFlicker 11s ease-in-out infinite -2.5s, spotSway2 23s ease-in-out infinite -7.0s; }
+.cl-spot--3 { left: 50%;  margin-left: -3.5%; animation: spotFlicker 8s  ease-in-out infinite -4.5s, spotSway3 26s ease-in-out infinite -12s; }
+.cl-spot--4 { right: 19%; animation: spotFlicker 10s ease-in-out infinite -6.0s, spotSway4 21s ease-in-out infinite -4.0s; }
+.cl-spot--5 { right: 3%;  animation: spotFlicker 9s  ease-in-out infinite -1.0s, spotSway5 17s ease-in-out infinite -9.0s; }
 
 @keyframes spotFlicker {
   0%,100% { opacity: 1; }
-  25%     { opacity: 0.82; }
-  55%     { opacity: 0.94; }
-  78%     { opacity: 0.78; }
+  25%     { opacity: 0.80; }
+  55%     { opacity: 0.92; }
+  78%     { opacity: 0.75; }
 }
+@keyframes spotSway1 { 0%,100% { transform: rotate(-13deg); } 50% { transform: rotate(-9deg);  } }
+@keyframes spotSway2 { 0%,100% { transform: rotate(-5deg);  } 50% { transform: rotate(-1deg);  } }
+@keyframes spotSway3 { 0%,100% { transform: rotate(0deg);   } 50% { transform: rotate(2.5deg); } }
+@keyframes spotSway4 { 0%,100% { transform: rotate(5deg);   } 50% { transform: rotate(9deg);   } }
+@keyframes spotSway5 { 0%,100% { transform: rotate(13deg);  } 50% { transform: rotate(9deg);   } }
 
 /* ---- Floor warm glow ---- */
 .cl-floor-glow {
   position: absolute;
   bottom: 0; left: 0; right: 0;
-  height: 42%;
-  background: radial-gradient(ellipse at 50% 100%,
-    rgba(195,110,18,0.55) 0%,
-    rgba(150,75,10,0.22) 30%,
-    transparent 65%);
+  height: 48%;
+  background:
+    radial-gradient(ellipse 30% 40% at 5%   100%, rgba(225,165,30,0.45) 0%, transparent 70%),
+    radial-gradient(ellipse 25% 35% at 22%  100%, rgba(220,155,28,0.35) 0%, transparent 70%),
+    radial-gradient(ellipse 30% 42% at 50%  100%, rgba(235,175,35,0.50) 0%, transparent 70%),
+    radial-gradient(ellipse 25% 35% at 78%  100%, rgba(220,155,28,0.35) 0%, transparent 70%),
+    radial-gradient(ellipse 30% 40% at 95%  100%, rgba(225,165,30,0.45) 0%, transparent 70%);
   pointer-events: none;
   z-index: 1;
 }
@@ -269,6 +302,25 @@ img, svg { display: block; }
     drop-shadow(0 50px 90px rgba(0,0,0,0.95))
     drop-shadow(-20px 14px 40px rgba(0,0,0,0.75))
     drop-shadow(0 0 50px rgba(195,115,18,0.18));
+}
+
+/* Zoom-in entrance triggered by .is-active on #clapper */
+#clapper.is-active .cl-prop {
+  animation:
+    propEnter 1.6s cubic-bezier(0.16, 1, 0.3, 1) forwards,
+    propFloat 11s ease-in-out 1.6s infinite;
+}
+
+@keyframes propEnter {
+  from { transform: translate(-50%, -42%) scale(0.72) rotate(-1.5deg); opacity: 0; }
+  to   { transform: translate(-50%, -48%) scale(1)    rotate(0deg);    opacity: 1; }
+}
+
+@keyframes propFloat {
+  0%,100% { transform: translate(-50%, -48%) scale(1)     rotate(0deg);   }
+  28%     { transform: translate(-50%, -50%) scale(1.022) rotate(0.5deg);  }
+  58%     { transform: translate(-50%, -47%) scale(1.014) rotate(-0.4deg); }
+  82%     { transform: translate(-50%, -49%) scale(1.020) rotate(0.3deg);  }
 }
 
 /* ---- Arm (colorful stripes, pivots at bottom-left) ---- */
@@ -743,7 +795,8 @@ img, svg { display: block; }
   width: 48px; height: 48px;
   pointer-events: none;
   z-index: 99999;
-  transform: translate(-22px, -22px);
+  will-change: transform;
+  transform: translate3d(-200px, -200px, 0);
   opacity: 0;
   transition: opacity 0.3s;
 }
