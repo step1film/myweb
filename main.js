@@ -100,6 +100,7 @@
   -------------------------------------------------- */
   function initScrollDriver() {
     const clapper  = document.getElementById('clapper');
+    const stageBg  = document.getElementById('stage-bg');
     const arm      = document.getElementById('clapperArm');
     const hWrapper = document.getElementById('h-wrapper');
     const panels   = Array.from(document.querySelectorAll('.h-panel'));
@@ -122,6 +123,7 @@
       /* Clapperboard zone: scrollY 0 → vh */
       const clapP = sy / vh;
       if (clapP < 1) {
+        if (stageBg) stageBg.style.display = '';
         clapper.style.display = '';
         clapper.style.opacity = '1';
         const armP     = Math.min(1, clapP / 0.25);
@@ -132,6 +134,7 @@
         const slideP = Math.max(0, Math.min(1, (clapP - 0.3) / 0.7));
         clapper.style.transform = `translateY(${-slideP * 100}vh)`;
       } else {
+        if (stageBg) stageBg.style.display = 'none';
         clapper.style.display = 'none';
       }
 
@@ -216,7 +219,7 @@
     </svg>`;
     document.body.appendChild(el);
     window.addEventListener('mousemove', e => {
-      el.style.transform = `translate3d(${e.clientX - 7}px,${e.clientY - 7}px,0)`;
+      el.style.transform = `translate3d(${e.clientX - 8}px,${e.clientY - 8}px,0)`;
       if (!el.classList.contains('visible')) el.classList.add('visible');
     }, { passive: true });
   }

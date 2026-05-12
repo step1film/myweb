@@ -782,7 +782,7 @@ img, svg { display: block; }
 #film-cursor {
   position: fixed;
   top: 0; left: 0;
-  width: 14px; height: 14px;
+  width: 16px; height: 16px;
   pointer-events: none;
   z-index: 99999;
   will-change: transform;
