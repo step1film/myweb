@@ -125,15 +125,6 @@ img, svg { display: block; }
 }
 
 /* =====================================================
-   STAGE BACKGROUND — fixed, never moves
-   ===================================================== */
-#stage-bg {
-  position: fixed; inset: 0;
-  background: #050402 url('bg-stage.jpg') center 30% / cover no-repeat;
-  z-index: 7999;
-}
-
-/* =====================================================
    CLAPPERBOARD
    ===================================================== */
 #clapper {
@@ -143,15 +134,18 @@ img, svg { display: block; }
   overflow: hidden;
   opacity: 0;
   pointer-events: none;
-  perspective: 1400px;
-  perspective-origin: 50% 40%;
 }
 
-/* 3D scene — animates clapperboard only */
+/* Stage background — inside #clapper, scrolls away with it */
+#stage-bg {
+  position: absolute; inset: 0;
+  background: #050402 url('bg-stage.jpg') center 30% / cover no-repeat;
+  z-index: 0;
+}
+
+/* 3D scene — no idle animation */
 .cl-scene {
   position: absolute; inset: 0;
-  transform-style: preserve-3d;
-  animation: clapFloat 14s ease-in-out infinite;
 }
 
 @keyframes clapFloat {
@@ -281,12 +275,12 @@ img, svg { display: block; }
 
 /* ---- Clapperboard prop ---- */
 .cl-prop {
-  --arm-h: clamp(60px, 11vw, 96px);
+  --arm-h: clamp(70px, 12vw, 108px);
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -48%);
-  width: clamp(300px, 46vw, 565px);
+  width: clamp(420px, 62vw, 760px);
   z-index: 5;
   filter:
     drop-shadow(0 50px 90px rgba(0,0,0,0.95))
@@ -294,23 +288,13 @@ img, svg { display: block; }
     drop-shadow(0 0 50px rgba(195,115,18,0.18));
 }
 
-/* Zoom-in entrance triggered by .is-active on #clapper */
 #clapper.is-active .cl-prop {
-  animation:
-    propEnter 1.6s cubic-bezier(0.16, 1, 0.3, 1) forwards,
-    propFloat 11s ease-in-out 1.6s infinite;
+  animation: propEnter 1.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes propEnter {
-  from { transform: translate(-50%, -42%) scale(0.72) rotate(-1.5deg); opacity: 0; }
+  from { transform: translate(-50%, -42%) scale(0.78) rotate(-1.5deg); opacity: 0; }
   to   { transform: translate(-50%, -48%) scale(1)    rotate(0deg);    opacity: 1; }
-}
-
-@keyframes propFloat {
-  0%,100% { transform: translate(-50%, -48%) scale(1)     rotate(0deg);   }
-  28%     { transform: translate(-50%, -50%) scale(1.022) rotate(0.5deg);  }
-  58%     { transform: translate(-50%, -47%) scale(1.014) rotate(-0.4deg); }
-  82%     { transform: translate(-50%, -49%) scale(1.020) rotate(0.3deg);  }
 }
 
 /* ---- Arm (colorful stripes, pivots at bottom-left) ---- */

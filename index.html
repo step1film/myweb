@@ -12,40 +12,9 @@
 </head>
 <body class="is-loading">
 
-  <!-- Static stage background — completely separate from clapper -->
-  <div id="stage-bg" aria-hidden="true"></div>
-
-  <!-- =====================================================
-       FILM GRAIN
-  ====================================================== -->
-  <canvas id="grain" aria-hidden="true"></canvas>
-
-  <!-- =====================================================
-       01. COUNTDOWN LOADER
-  ====================================================== -->
-  <div id="loader" aria-hidden="true">
-    <div class="ld-holes top"  aria-hidden="true"></div>
-    <div class="ld-holes bot"  aria-hidden="true"></div>
-    <div class="ld-scan"       aria-hidden="true"></div>
-    <div class="ld-body">
-      <div class="ld-ring-wrap">
-        <svg class="ld-svg" viewBox="0 0 120 120" fill="none">
-          <circle class="ld-track"    cx="60" cy="60" r="50"/>
-          <circle class="ld-progress" cx="60" cy="60" r="50"/>
-          <line   class="ld-ch" x1="20" y1="60"  x2="100" y2="60"/>
-          <line   class="ld-cv" x1="60" y1="20"  x2="60"  y2="100"/>
-          <circle class="ld-dot" cx="60" cy="60" r="4"/>
-        </svg>
-        <span class="ld-num" id="ldNum">5</span>
-      </div>
-      <p class="ld-label">ROLL &nbsp;·&nbsp; SOUND &nbsp;·&nbsp; ACTION</p>
-    </div>
-  </div>
-
-  <!-- =====================================================
-       02. CLAPPERBOARD
-  ====================================================== -->
   <div id="clapper" aria-hidden="true">
+    <!-- Stage background — lives inside clapper so it scrolls away with it -->
+    <div id="stage-bg" aria-hidden="true"></div>
     <div class="cl-scene">
 
       <!-- Stage spotlights from above -->
@@ -140,6 +109,33 @@
 
     </div><!-- .cl-scene -->
   </div><!-- #clapper -->
+
+  <!-- =====================================================
+       FILM GRAIN
+  ====================================================== -->
+  <canvas id="grain" aria-hidden="true"></canvas>
+
+  <!-- =====================================================
+       01. COUNTDOWN LOADER
+  ====================================================== -->
+  <div id="loader" aria-hidden="true">
+    <div class="ld-holes top"  aria-hidden="true"></div>
+    <div class="ld-holes bot"  aria-hidden="true"></div>
+    <div class="ld-scan"       aria-hidden="true"></div>
+    <div class="ld-body">
+      <div class="ld-ring-wrap">
+        <svg class="ld-svg" viewBox="0 0 120 120" fill="none">
+          <circle class="ld-track"    cx="60" cy="60" r="50"/>
+          <circle class="ld-progress" cx="60" cy="60" r="50"/>
+          <line   class="ld-ch" x1="20" y1="60"  x2="100" y2="60"/>
+          <line   class="ld-cv" x1="60" y1="20"  x2="60"  y2="100"/>
+          <circle class="ld-dot" cx="60" cy="60" r="4"/>
+        </svg>
+        <span class="ld-num" id="ldNum">5</span>
+      </div>
+      <p class="ld-label">ROLL &nbsp;·&nbsp; SOUND &nbsp;·&nbsp; ACTION</p>
+    </div>
+  </div>
 
   <!-- =====================================================
        03. SITE PAGE

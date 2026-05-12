@@ -98,9 +98,10 @@
   /* --------------------------------------------------
      SCROLL DRIVER
   -------------------------------------------------- */
-  function initScrollDriver() {
+  function initScrollDriver(propDelay) {
     const clapper  = document.getElementById('clapper');
     const arm      = document.getElementById('clapperArm');
+    const prop     = document.querySelector('.cl-prop');
     const hWrapper = document.getElementById('h-wrapper');
     const panels   = Array.from(document.querySelectorAll('.h-panel'));
     const dots     = Array.from(document.querySelectorAll('.h-dot'));
@@ -109,6 +110,9 @@
     const prevBtn  = document.getElementById('hPrev');
     const nextBtn  = document.getElementById('hNext');
     if (!clapper || !arm || !hWrapper || !panels.length) return;
+
+    let propReady = false;
+    setTimeout(() => { propReady = true; }, propDelay || 1700);
 
     const LABELS = ['Films', 'About', 'Awards', 'Contact'];
     const TOTAL  = panels.length;
@@ -127,6 +131,12 @@
         const armP     = Math.min(1, clapP / 0.25);
         const armAngle = -16 * (1 - armP);
         arm.style.transform = `rotate(${armAngle}deg)`;
+        if (propReady && prop) {
+          const t = Math.min(1, clapP / 0.35);
+          const sc = 1 + t * 0.07;
+          const ro = -1.8 * (1 - t);
+          prop.style.transform = `translate(-50%, -48%) scale(${sc}) rotate(${ro}deg)`;
+        }
         if (armP >= 1 && !clapFired) { clapFired = true; playClap(); }
         if (armP < 0.85) clapFired = false;
         const slideP = Math.max(0, Math.min(1, (clapP - 0.3) / 0.7));
@@ -232,7 +242,7 @@
       clapper.style.opacity = '1';
       clapper.classList.add('is-active');
       document.body.classList.remove('is-loading');
-      initScrollDriver();
+      initScrollDriver(1700);
     });
   });
 
