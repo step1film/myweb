@@ -138,16 +138,16 @@ img, svg { display: block; }
   perspective-origin: 50% 40%;
 }
 
-/* Static background layer — does not rotate with clapperboard */
-.cl-scene::before {
+/* Static background — on #clapper which never animates */
+#clapper::before {
   content: '';
   position: absolute; inset: 0;
   background: #050402 url('bg-stage.jpg') center 30% / cover no-repeat;
-  filter: blur(2px);
+  filter: blur(3px);
   z-index: 0;
 }
 
-/* 3D scene — animates clapperboard only */
+/* 3D scene — animates clapperboard only, no background here */
 .cl-scene {
   position: absolute; inset: 0;
   transform-style: preserve-3d;
@@ -782,7 +782,7 @@ img, svg { display: block; }
 #film-cursor {
   position: fixed;
   top: 0; left: 0;
-  width: 41px; height: 41px;
+  width: 24px; height: 24px;
   pointer-events: none;
   z-index: 99999;
   will-change: transform;
