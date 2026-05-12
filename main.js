@@ -199,80 +199,31 @@
   }
 
   /* --------------------------------------------------
-     FILM REEL CURSOR — 32mm with hanging strip
+     FILM REEL CURSOR — matches reference icon (Q-shape reel)
   -------------------------------------------------- */
   function initCursor() {
     if (window.matchMedia('(hover:none)').matches) return;
     const el = document.createElement('div');
     el.id = 'film-cursor';
-    el.innerHTML = `<svg viewBox="0 0 46 92" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <!-- Hanging film strip -->
-      <rect x="19.5" y="43" width="7" height="49" fill="#141414"/>
-      <!-- Left sprocket holes -->
-      <rect x="20"   y="46.5" width="1.8" height="2.8" fill="#070707" rx="0.35"/>
-      <rect x="20"   y="53"   width="1.8" height="2.8" fill="#070707" rx="0.35"/>
-      <rect x="20"   y="59.5" width="1.8" height="2.8" fill="#070707" rx="0.35"/>
-      <rect x="20"   y="66"   width="1.8" height="2.8" fill="#070707" rx="0.35"/>
-      <rect x="20"   y="72.5" width="1.8" height="2.8" fill="#070707" rx="0.35"/>
-      <rect x="20"   y="79"   width="1.8" height="2.8" fill="#070707" rx="0.35"/>
-      <rect x="20"   y="85.5" width="1.8" height="2.8" fill="#070707" rx="0.35"/>
-      <!-- Right sprocket holes -->
-      <rect x="24.2" y="46.5" width="1.8" height="2.8" fill="#070707" rx="0.35"/>
-      <rect x="24.2" y="53"   width="1.8" height="2.8" fill="#070707" rx="0.35"/>
-      <rect x="24.2" y="59.5" width="1.8" height="2.8" fill="#070707" rx="0.35"/>
-      <rect x="24.2" y="66"   width="1.8" height="2.8" fill="#070707" rx="0.35"/>
-      <rect x="24.2" y="72.5" width="1.8" height="2.8" fill="#070707" rx="0.35"/>
-      <rect x="24.2" y="79"   width="1.8" height="2.8" fill="#070707" rx="0.35"/>
-      <rect x="24.2" y="85.5" width="1.8" height="2.8" fill="#070707" rx="0.35"/>
-      <!-- Frame image areas -->
-      <rect x="22.1" y="45.5" width="1.8" height="4.2" fill="#1c1c1c"/>
-      <rect x="22.1" y="52"   width="1.8" height="4.2" fill="#1c1c1c"/>
-      <rect x="22.1" y="58.5" width="1.8" height="4.2" fill="#1c1c1c"/>
-      <rect x="22.1" y="65"   width="1.8" height="4.2" fill="#1c1c1c"/>
-      <rect x="22.1" y="71.5" width="1.8" height="4.2" fill="#1c1c1c"/>
-      <rect x="22.1" y="78"   width="1.8" height="4.2" fill="#1c1c1c"/>
-      <rect x="22.1" y="84.5" width="1.8" height="4.2" fill="#1c1c1c"/>
-      <!-- 32mm film reel disc -->
-      <g id="reel-disc">
-        <!-- Outer rim -->
-        <circle cx="23" cy="22" r="20.5" fill="#0e0e0e" stroke="#bcbcbc" stroke-width="0.75"/>
-        <!-- Wide dark tire ring -->
-        <circle cx="23" cy="22" r="15.5" fill="none" stroke="#181818" stroke-width="9.5"/>
-        <!-- Sprocket dash ring -->
-        <circle cx="23" cy="22" r="19"   fill="none" stroke="#262626" stroke-width="2.2" stroke-dasharray="1.7 3.4"/>
-        <!-- 3 spokes -->
-        <line x1="23" y1="22" x2="23"   y2="2"    stroke="#a8a8a8" stroke-width="0.9"/>
-        <line x1="23" y1="22" x2="5.2"  y2="31"   stroke="#a8a8a8" stroke-width="0.9"/>
-        <line x1="23" y1="22" x2="40.8" y2="31"   stroke="#a8a8a8" stroke-width="0.9"/>
-        <!-- End caps on spokes -->
-        <circle cx="23"   cy="2"  r="2.2" fill="#111" stroke="#a8a8a8" stroke-width="0.6"/>
-        <circle cx="5.2"  cy="31" r="2.2" fill="#111" stroke="#a8a8a8" stroke-width="0.6"/>
-        <circle cx="40.8" cy="31" r="2.2" fill="#111" stroke="#a8a8a8" stroke-width="0.6"/>
-        <!-- Center hub -->
-        <circle cx="23" cy="22" r="5.2" fill="#0c0c0c" stroke="#a8a8a8" stroke-width="0.65"/>
-        <!-- Center pin -->
-        <circle cx="23" cy="22" r="1.6" fill="#cccccc"/>
-      </g>
+    el.innerHTML = `<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Outer disc -->
+      <circle cx="22" cy="22" r="22" fill="#f0f0f0"/>
+      <!-- 3 large holes (top, left, bottom — right hole replaced by strip cutout) -->
+      <circle cx="22" cy="7.5"  r="7.2" fill="#0c0c0c"/>
+      <circle cx="7.5"  cy="22" r="7.2" fill="#0c0c0c"/>
+      <circle cx="36.5" cy="22" r="7.2" fill="#0c0c0c"/>
+      <circle cx="22" cy="36.5" r="7.2" fill="#0c0c0c"/>
+      <!-- Center hub -->
+      <circle cx="22" cy="22" r="3.8" fill="#0c0c0c"/>
+      <!-- Film strip Q-tail (bottom-right protrusion) -->
+      <rect x="38" y="39" width="10" height="7" fill="#f0f0f0" rx="3.5"/>
     </svg>`;
     document.body.appendChild(el);
-    const disc = el.querySelector('#reel-disc');
-    let angle = 0, velocity = 0, lastX = 0, lastY = 0;
     window.addEventListener('mousemove', e => {
-      const dx = e.clientX - lastX, dy = e.clientY - lastY;
-      velocity = Math.sqrt(dx*dx + dy*dy) * 1.8;
-      lastX = e.clientX; lastY = e.clientY;
       el.style.left = e.clientX + 'px';
       el.style.top  = e.clientY + 'px';
       el.classList.add('visible');
     });
-    function spin() {
-      velocity *= 0.91;
-      angle    += Math.max(0.25, velocity);
-      if (angle >= 360) angle -= 360;
-      disc.setAttribute('transform', `rotate(${angle}, 23, 22)`);
-      requestAnimationFrame(spin);
-    }
-    spin();
   }
 
   /* --------------------------------------------------
