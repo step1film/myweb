@@ -125,6 +125,15 @@ img, svg { display: block; }
 }
 
 /* =====================================================
+   STAGE BACKGROUND — fixed, never moves
+   ===================================================== */
+#stage-bg {
+  position: fixed; inset: 0;
+  background: #050402 url('bg-stage.jpg') center 30% / cover no-repeat;
+  z-index: 7999;
+}
+
+/* =====================================================
    CLAPPERBOARD
    ===================================================== */
 #clapper {
@@ -138,10 +147,9 @@ img, svg { display: block; }
   perspective-origin: 50% 40%;
 }
 
-/* 3D scene — dark studio atmosphere */
+/* 3D scene — animates clapperboard only */
 .cl-scene {
   position: absolute; inset: 0;
-  background: #050402;
   transform-style: preserve-3d;
   animation: clapFloat 14s ease-in-out infinite;
 }
@@ -154,23 +162,15 @@ img, svg { display: block; }
   82%     { transform: rotateX(-0.3deg) rotateY(0.6deg)  scale3d(0.998,0.998,1); }
 }
 
-/* ---- Stage spotlights ---- */
-.cl-lights {
-  position: absolute; inset: 0;
-  pointer-events: none;
-  z-index: 1;
-  overflow: visible;
-}
+/* ---- Stage spotlights (hidden) ---- */
+.cl-lights { display: none; }
 .cl-spot {
   position: absolute;
   top: 0;
   width: 7%;
   height: 90%;
   transform-origin: 50% 0%;
-  /* no filter on parent so ::before and ::after can have independent sharpness */
 }
-
-/* Bright lamp fixture source */
 .cl-spot::before {
   content: '';
   position: absolute;
@@ -178,101 +178,32 @@ img, svg { display: block; }
   transform: translateX(-50%);
   width: 32px; height: 32px;
   border-radius: 50%;
-  background: radial-gradient(circle,
-    rgba(255,255,230,1)   15%,
-    rgba(255,235,130,0.7) 50%,
-    transparent 82%);
+  background: radial-gradient(circle, rgba(255,255,230,1) 15%, rgba(255,235,130,0.7) 50%, transparent 82%);
   filter: blur(4px);
   z-index: 2;
 }
-
-/* Light cone beam */
 .cl-spot::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg,
-    rgba(255,248,175,0.62) 0%,
-    rgba(255,210,75,0.26)  18%,
-    rgba(235,162,38,0.10)  52%,
-    rgba(170,110,20,0.03)  78%,
-    transparent 100%);
+  background: linear-gradient(180deg, rgba(255,248,175,0.62) 0%, rgba(255,210,75,0.26) 18%, rgba(235,162,38,0.10) 52%, rgba(170,110,20,0.03) 78%, transparent 100%);
   filter: blur(11px);
 }
-
 .cl-spot--1 { left: 3%;   animation: spotFlicker 9s  ease-in-out infinite  0.0s, spotSway1 19s ease-in-out infinite  0.0s; }
 .cl-spot--2 { left: 19%;  animation: spotFlicker 11s ease-in-out infinite -2.5s, spotSway2 23s ease-in-out infinite -7.0s; }
 .cl-spot--3 { left: 50%;  margin-left: -3.5%; animation: spotFlicker 8s  ease-in-out infinite -4.5s, spotSway3 26s ease-in-out infinite -12s; }
 .cl-spot--4 { right: 19%; animation: spotFlicker 10s ease-in-out infinite -6.0s, spotSway4 21s ease-in-out infinite -4.0s; }
 .cl-spot--5 { right: 3%;  animation: spotFlicker 9s  ease-in-out infinite -1.0s, spotSway5 17s ease-in-out infinite -9.0s; }
-
-@keyframes spotFlicker {
-  0%,100% { opacity: 1; }
-  25%     { opacity: 0.80; }
-  55%     { opacity: 0.92; }
-  78%     { opacity: 0.75; }
-}
+@keyframes spotFlicker { 0%,100% { opacity: 1; } 25% { opacity: 0.80; } 55% { opacity: 0.92; } 78% { opacity: 0.75; } }
 @keyframes spotSway1 { 0%,100% { transform: rotate(-13deg); } 50% { transform: rotate(-9deg);  } }
 @keyframes spotSway2 { 0%,100% { transform: rotate(-5deg);  } 50% { transform: rotate(-1deg);  } }
 @keyframes spotSway3 { 0%,100% { transform: rotate(0deg);   } 50% { transform: rotate(2.5deg); } }
 @keyframes spotSway4 { 0%,100% { transform: rotate(5deg);   } 50% { transform: rotate(9deg);   } }
 @keyframes spotSway5 { 0%,100% { transform: rotate(13deg);  } 50% { transform: rotate(9deg);   } }
 
-/* ---- Floor warm glow ---- */
-.cl-floor-glow {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 48%;
-  background:
-    radial-gradient(ellipse 30% 40% at 5%   100%, rgba(225,165,30,0.45) 0%, transparent 70%),
-    radial-gradient(ellipse 25% 35% at 22%  100%, rgba(220,155,28,0.35) 0%, transparent 70%),
-    radial-gradient(ellipse 30% 42% at 50%  100%, rgba(235,175,35,0.50) 0%, transparent 70%),
-    radial-gradient(ellipse 25% 35% at 78%  100%, rgba(220,155,28,0.35) 0%, transparent 70%),
-    radial-gradient(ellipse 30% 40% at 95%  100%, rgba(225,165,30,0.45) 0%, transparent 70%);
-  pointer-events: none;
-  z-index: 1;
-}
-
-/* ---- Animated haze / smoke ---- */
-.cl-haze {
-  position: absolute; inset: 0;
-  pointer-events: none;
-  z-index: 2;
-  overflow: hidden;
-}
-.cl-smoke {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(58px);
-}
-.cl-smoke--1 {
-  width: 62vw; height: 26vh;
-  background: rgba(185,120,32,0.28);
-  bottom: 6%; left: 0%;
-  animation: smokeA 22s ease-in-out infinite;
-  animation-delay: 0s;
-}
-.cl-smoke--2 {
-  width: 52vw; height: 22vh;
-  background: rgba(205,138,38,0.22);
-  bottom: 10%; right: 2%;
-  animation: smokeB 28s ease-in-out infinite;
-  animation-delay: -9s;
-}
-.cl-smoke--3 {
-  width: 78vw; height: 30vh;
-  background: rgba(160,95,22,0.16);
-  bottom: 1%; left: 10%;
-  animation: smokeA 36s ease-in-out infinite;
-  animation-delay: -18s;
-}
-.cl-smoke--4 {
-  width: 44vw; height: 20vh;
-  background: rgba(220,148,48,0.13);
-  bottom: 18%; left: 26%;
-  animation: smokeB 25s ease-in-out infinite;
-  animation-delay: -5s;
-}
+.cl-floor-glow { display: none; }
+.cl-haze { display: none; }
+.cl-smoke { position: absolute; border-radius: 50%; filter: blur(58px); }
 
 @keyframes smokeA {
   0%   { transform: translate(0%,   0%)   scale(1);    opacity: 0; }
@@ -296,7 +227,7 @@ img, svg { display: block; }
   left: 50%;
   top: 50%;
   transform: translate(-50%, -48%);
-  width: clamp(260px, 40vw, 490px);
+  width: clamp(300px, 46vw, 565px);
   z-index: 5;
   filter:
     drop-shadow(0 50px 90px rgba(0,0,0,0.95))
@@ -304,7 +235,6 @@ img, svg { display: block; }
     drop-shadow(0 0 50px rgba(195,115,18,0.18));
 }
 
-/* Zoom-in entrance triggered by .is-active on #clapper */
 #clapper.is-active .cl-prop {
   animation:
     propEnter 1.6s cubic-bezier(0.16, 1, 0.3, 1) forwards,
@@ -323,7 +253,6 @@ img, svg { display: block; }
   82%     { transform: translate(-50%, -49%) scale(1.020) rotate(0.3deg);  }
 }
 
-/* ---- Arm (colorful stripes, pivots at bottom-left) ---- */
 .cl-arm {
   position: relative;
   height: var(--arm-h);
@@ -366,7 +295,6 @@ img, svg { display: block; }
   pointer-events: none;
 }
 
-/* ---- Hinge ---- */
 .cl-hinge {
   position: relative;
   width: 100%;
@@ -387,7 +315,6 @@ img, svg { display: block; }
   flex-shrink: 0;
 }
 
-/* ---- Board body (cream, like a real prop) ---- */
 .cl-board {
   position: relative;
   width: 100%;
@@ -401,7 +328,6 @@ img, svg { display: block; }
   overflow: hidden;
 }
 
-/* Top metal edge */
 .cl-board::before {
   content: '';
   position: absolute;
@@ -411,7 +337,6 @@ img, svg { display: block; }
   z-index: 1;
 }
 
-/* Top-left lighting sheen */
 .cl-board::after {
   content: '';
   position: absolute; inset: 0;
@@ -486,7 +411,6 @@ img, svg { display: block; }
   pointer-events: none;
 }
 
-/* Floating logo — no bar, no background */
 #logo-mark {
   position: fixed; top: 0; left: 0; right: 0;
   height: var(--nav-h);
@@ -792,7 +716,7 @@ img, svg { display: block; }
 #film-cursor {
   position: fixed;
   top: 0; left: 0;
-  width: 48px; height: 48px;
+  width: 14px; height: 14px;
   pointer-events: none;
   z-index: 99999;
   will-change: transform;
@@ -814,7 +738,7 @@ img, svg { display: block; }
   .h-nav-counter { display: none; }
   .cl-grid { grid-template-columns: repeat(2, 1fr); }
   .cl-cell.wide { grid-column: span 2; }
-  .cl-prop { width: 88vw; }
+  .cl-prop { width: 92vw; }
 }
 
 @media (max-width: 480px) {

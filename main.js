@@ -3,9 +3,6 @@
 
   let clapFired = false;
 
-  /* --------------------------------------------------
-     FILM GRAIN
-  -------------------------------------------------- */
   function initGrain() {
     const c = document.getElementById('grain');
     if (!c) return;
@@ -28,9 +25,6 @@
     addEventListener('resize', resize);
   }
 
-  /* --------------------------------------------------
-     SYNTHESISED CLAP SOUND
-  -------------------------------------------------- */
   function playClap() {
     try {
       const AC = window.AudioContext || window.webkitAudioContext;
@@ -68,9 +62,6 @@
     } catch (e) { /* audio blocked */ }
   }
 
-  /* --------------------------------------------------
-     COUNTDOWN LOADER
-  -------------------------------------------------- */
   function initLoader(onDone) {
     const loader = document.getElementById('loader');
     const numEl  = document.getElementById('ldNum');
@@ -95,9 +86,6 @@
     }, 900);
   }
 
-  /* --------------------------------------------------
-     SCROLL DRIVER
-  -------------------------------------------------- */
   function initScrollDriver() {
     const clapper  = document.getElementById('clapper');
     const arm      = document.getElementById('clapperArm');
@@ -119,7 +107,6 @@
       const vh = window.innerHeight;
       const sy = window.scrollY;
 
-      /* Clapperboard zone: scrollY 0 → vh */
       const clapP = sy / vh;
       if (clapP < 1) {
         clapper.style.display = '';
@@ -135,7 +122,6 @@
         clapper.style.display = 'none';
       }
 
-      /* Wipe panels */
       const scrolledIn = -hWrapper.getBoundingClientRect().top;
       panels.forEach((panel, i) => {
         if (i === 0) return;
@@ -143,7 +129,6 @@
         panel.style.clipPath = `inset(0 0 0 ${(1-progress)*100}%)`;
       });
 
-      /* Nav sync */
       const panelIdx = Math.min(TOTAL-1, Math.max(0, Math.floor(scrolledIn / vh)));
       if (panelIdx !== lastPanelIdx) {
         lastPanelIdx = panelIdx;
@@ -198,9 +183,6 @@
     }
   }
 
-  /* --------------------------------------------------
-     FILM REEL CURSOR — Q-shape reel, GPU-composited via translate3d
-  -------------------------------------------------- */
   function initCursor() {
     if (window.matchMedia('(hover:none)').matches) return;
     const el = document.createElement('div');
@@ -216,14 +198,11 @@
     </svg>`;
     document.body.appendChild(el);
     window.addEventListener('mousemove', e => {
-      el.style.transform = `translate3d(${e.clientX - 22}px,${e.clientY - 22}px,0)`;
+      el.style.transform = `translate3d(${e.clientX - 7}px,${e.clientY - 7}px,0)`;
       if (!el.classList.contains('visible')) el.classList.add('visible');
     }, { passive: true });
   }
 
-  /* --------------------------------------------------
-     BOOT SEQUENCE
-  -------------------------------------------------- */
   document.addEventListener('DOMContentLoaded', () => {
     initGrain();
     initCursor();
