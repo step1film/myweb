@@ -199,20 +199,34 @@
   }
 
   /* --------------------------------------------------
-     STEP1FILM LOGO CURSOR
+     FILM REEL CURSOR — classic reel icon with strip
   -------------------------------------------------- */
   function initCursor() {
     if (window.matchMedia('(hover:none)').matches) return;
     const el = document.createElement('div');
     el.id = 'film-cursor';
-    el.innerHTML = `<svg viewBox="0 0 86 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect width="86" height="24" fill="#0a0a0a" rx="3"/>
-      <rect x="1.5" y="1.5" width="83" height="21" fill="none" stroke="#e01c1c" stroke-width="0.9" rx="2.2"/>
-      <text x="6" y="17"
-        font-family="Arial Narrow, Impact, Arial Black, Arial, sans-serif"
-        font-size="13" font-weight="900" letter-spacing="1">
-        <tspan fill="#f0f0f0">STEP</tspan><tspan fill="#e01c1c">1</tspan><tspan fill="#f0f0f0">FILM</tspan>
-      </text>
+    el.innerHTML = `<svg viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Background disc -->
+      <circle cx="22" cy="22" r="22" fill="#0a0a0a"/>
+      <!-- Reel body -->
+      <circle cx="22" cy="22" r="19" fill="#f0f0f0"/>
+      <!-- Dark inner hub zone -->
+      <circle cx="22" cy="22" r="11" fill="#0a0a0a"/>
+      <!-- Center hub (white) -->
+      <circle cx="22" cy="22" r="4.5" fill="#f0f0f0"/>
+      <!-- 4 holes at N/E/S/W -->
+      <circle cx="22"  cy="4.5"  r="4.5" fill="#0a0a0a"/>
+      <circle cx="39.5" cy="22"  r="4.5" fill="#0a0a0a"/>
+      <circle cx="22"  cy="39.5" r="4.5" fill="#0a0a0a"/>
+      <circle cx="4.5"  cy="22"  r="4.5" fill="#0a0a0a"/>
+      <!-- Film strip hanging from bottom-right -->
+      <rect x="35" y="37" width="18" height="12" fill="#f0f0f0" rx="1.5"/>
+      <rect x="36.5" y="37"   width="2.8" height="3" fill="#0a0a0a" rx="0.4"/>
+      <rect x="41"   y="37"   width="2.8" height="3" fill="#0a0a0a" rx="0.4"/>
+      <rect x="45.5" y="37"   width="2.8" height="3" fill="#0a0a0a" rx="0.4"/>
+      <rect x="36.5" y="46"   width="2.8" height="3" fill="#0a0a0a" rx="0.4"/>
+      <rect x="41"   y="46"   width="2.8" height="3" fill="#0a0a0a" rx="0.4"/>
+      <rect x="45.5" y="46"   width="2.8" height="3" fill="#0a0a0a" rx="0.4"/>
     </svg>`;
     document.body.appendChild(el);
     window.addEventListener('mousemove', e => {
