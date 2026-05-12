@@ -138,145 +138,243 @@ img, svg { display: block; }
   perspective-origin: 50% 40%;
 }
 
-/* 3D scene that floats subtly */
+/* 3D scene — dark studio atmosphere */
 .cl-scene {
   position: absolute; inset: 0;
-  background: #0f0f0f;
+  background: #080604;
   transform-style: preserve-3d;
   animation: clapFloat 14s ease-in-out infinite;
-  box-shadow:
-    0 40px 120px rgba(0,0,0,0.95),
-    inset 0 0 100px rgba(0,0,0,0.55);
 }
 
 @keyframes clapFloat {
-  0%,100% { transform: rotateX(0deg)    rotateY(0deg)   scale3d(1,1,1); }
+  0%,100% { transform: rotateX(0deg)    rotateY(0deg)    scale3d(1,1,1); }
   18%     { transform: rotateX(1.6deg)  rotateY(-2.2deg) scale3d(1.008,1.008,1); }
   40%     { transform: rotateX(-0.6deg) rotateY(1.4deg)  scale3d(1.003,1.003,1); }
   65%     { transform: rotateX(1.0deg)  rotateY(-0.8deg) scale3d(1.005,1.005,1); }
   82%     { transform: rotateX(-0.3deg) rotateY(0.6deg)  scale3d(0.998,0.998,1); }
 }
 
-.cl-ramp {
-  position: absolute;
-  inset: 0;
+/* ---- Stage spotlights ---- */
+.cl-lights {
+  position: absolute; inset: 0;
   pointer-events: none;
-  z-index: 10;
+  z-index: 1;
   overflow: hidden;
 }
-/* Warm ambient studio light (static) */
-.cl-ramp::before {
-  content: '';
-  position: absolute; inset: 0;
-  background:
-    radial-gradient(ellipse at 25% 35%, rgba(255,195,80,0.09) 0%, transparent 55%),
-    radial-gradient(ellipse at 75% 65%, rgba(80,120,255,0.05) 0%, transparent 48%);
-}
-/* Moving sweep highlight */
-.cl-ramp::after {
-  content: '';
+.cl-spot {
   position: absolute;
-  top: -15%;
-  left: -90%;
-  width: 42%;
-  height: 130%;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(255,255,255,0.04) 20%,
-    rgba(255,255,255,0.14) 50%,
-    rgba(255,255,255,0.04) 80%,
-    transparent 100%
-  );
-  transform: skewX(-10deg);
-  animation: rampSweep 6s ease-in-out infinite;
+  top: -2%;
+  width: 13%;
+  height: 90%;
+  background: linear-gradient(180deg,
+    rgba(255,205,95,0.24) 0%,
+    rgba(255,170,35,0.08) 55%,
+    transparent 100%);
+  filter: blur(24px);
+  transform-origin: 50% 0%;
+  animation: spotFlicker 9s ease-in-out infinite;
 }
-@keyframes rampSweep {
-  0%   { left: -90%; }
-  42%  { left: 150%; }
-  100% { left: 150%; }
+.cl-spot--1 { left: 2%;   transform: rotate(-13deg); animation-delay:  0s; }
+.cl-spot--2 { left: 17%;  transform: rotate(-5deg);  animation-delay: -2.5s; }
+.cl-spot--3 { left: 44%;  transform: translateX(-50%) rotate(0deg); animation-delay: -4.5s; }
+.cl-spot--4 { right: 17%; transform: rotate(5deg);   animation-delay: -6s; }
+.cl-spot--5 { right: 2%;  transform: rotate(13deg);  animation-delay: -1s; }
+
+@keyframes spotFlicker {
+  0%,100% { opacity: 1; }
+  25%     { opacity: 0.82; }
+  55%     { opacity: 0.94; }
+  78%     { opacity: 0.78; }
 }
 
-.cl-arm {
+/* ---- Floor warm glow ---- */
+.cl-floor-glow {
   position: absolute;
-  top: 0; left: 0; right: 0;
-  height: clamp(90px, 15vh, 140px);
-  background: repeating-linear-gradient(
-    -45deg,
-    #0f0f0f 0px, #0f0f0f 22px,
-    #f0f0f0 22px, #f0f0f0 44px
-  );
+  bottom: 0; left: 0; right: 0;
+  height: 42%;
+  background: radial-gradient(ellipse at 50% 100%,
+    rgba(195,110,18,0.55) 0%,
+    rgba(150,75,10,0.22) 30%,
+    transparent 65%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ---- Animated haze / smoke ---- */
+.cl-haze {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  overflow: hidden;
+}
+.cl-smoke {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(58px);
+}
+.cl-smoke--1 {
+  width: 62vw; height: 26vh;
+  background: rgba(185,120,32,0.28);
+  bottom: 6%; left: 0%;
+  animation: smokeA 22s ease-in-out infinite;
+  animation-delay: 0s;
+}
+.cl-smoke--2 {
+  width: 52vw; height: 22vh;
+  background: rgba(205,138,38,0.22);
+  bottom: 10%; right: 2%;
+  animation: smokeB 28s ease-in-out infinite;
+  animation-delay: -9s;
+}
+.cl-smoke--3 {
+  width: 78vw; height: 30vh;
+  background: rgba(160,95,22,0.16);
+  bottom: 1%; left: 10%;
+  animation: smokeA 36s ease-in-out infinite;
+  animation-delay: -18s;
+}
+.cl-smoke--4 {
+  width: 44vw; height: 20vh;
+  background: rgba(220,148,48,0.13);
+  bottom: 18%; left: 26%;
+  animation: smokeB 25s ease-in-out infinite;
+  animation-delay: -5s;
+}
+
+@keyframes smokeA {
+  0%   { transform: translate(0%,   0%)   scale(1);    opacity: 0; }
+  12%  { opacity: 0.65; }
+  45%  { transform: translate(4%,  -8%)   scale(1.12); opacity: 0.42; }
+  82%  { opacity: 0.52; }
+  100% { transform: translate(-2%, -15%)  scale(1.22); opacity: 0; }
+}
+@keyframes smokeB {
+  0%   { transform: translate(0%,   0%)   scale(1);    opacity: 0; }
+  15%  { opacity: 0.55; }
+  52%  { transform: translate(-5%, -10%)  scale(1.18); opacity: 0.35; }
+  88%  { opacity: 0.48; }
+  100% { transform: translate(3%,  -17%)  scale(1.28); opacity: 0; }
+}
+
+/* ---- Clapperboard prop ---- */
+.cl-prop {
+  --arm-h: clamp(60px, 11vw, 96px);
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -48%);
+  width: clamp(260px, 40vw, 490px);
+  z-index: 5;
+  filter:
+    drop-shadow(0 50px 90px rgba(0,0,0,0.95))
+    drop-shadow(-20px 14px 40px rgba(0,0,0,0.75))
+    drop-shadow(0 0 50px rgba(195,115,18,0.18));
+}
+
+/* ---- Arm (colorful stripes, pivots at bottom-left) ---- */
+.cl-arm {
+  position: relative;
+  height: var(--arm-h);
+  width: 100%;
+  background: #111;
   transform-origin: 0% 100%;
   transform: rotate(-16deg);
   will-change: transform;
   z-index: 2;
+  overflow: hidden;
+  border-radius: 3px 3px 0 0;
+}
+
+.cl-arm-stripes {
+  position: absolute;
+  top: 12%; left: 3%; right: 3%; bottom: 12%;
+  background: linear-gradient(
+    90deg,
+    #0d0d0d  0%,   #0d0d0d  5%,
+    #1e7c1e  5%,   #1e7c1e 19%,
+    #c6b200 19%,  #c6b200 33%,
+    #b71600 33%,  #b71600 47%,
+    #e8e8e8 47%,  #e8e8e8 61%,
+    #7c7c7c 61%,  #7c7c7c 75%,
+    #0d0d0d 75%,  #0d0d0d 100%
+  );
+  border: 1px solid rgba(255,255,255,0.06);
 }
 
 .cl-arm-info {
   position: absolute;
-  bottom: 10px; left: 14px;
-  display: flex; flex-direction: column; gap: 2px;
-  font-size: 9px;
-  letter-spacing: 0.2em;
+  bottom: 8px; right: 10px;
+  display: flex; flex-direction: column; gap: 1px;
+  font-size: 8px;
+  letter-spacing: 0.18em;
   font-family: var(--ff-body);
   font-weight: 500;
-  color: rgba(0,0,0,0.6);
-  mix-blend-mode: multiply;
+  color: rgba(255,255,255,0.45);
+  text-align: right;
   pointer-events: none;
 }
 
-.cl-arm-stripes {
-  position: absolute; inset: 0;
-  background: repeating-linear-gradient(
-    -45deg,
-    transparent 0, transparent 21px,
-    rgba(255,255,255,0.04) 21px, rgba(255,255,255,0.04) 22px,
-    transparent 22px, transparent 43px,
-    rgba(0,0,0,0.06) 43px, rgba(0,0,0,0.06) 44px
-  );
-  pointer-events: none;
-}
-
+/* ---- Hinge ---- */
 .cl-hinge {
-  position: absolute;
-  top: clamp(90px, 15vh, 140px);
-  left: 0; right: 0;
-  height: 4px;
-  background: #f0f0f0;
+  position: relative;
+  width: 100%;
+  height: 7px;
+  background: linear-gradient(180deg, #666 0%, #2a2a2a 50%, #555 100%);
   z-index: 3;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 8px;
+  padding: 0 6px;
 }
 .cl-hinge-dot {
   display: block;
-  width: 10px; height: 10px;
+  width: 13px; height: 13px;
   border-radius: 50%;
-  background: #0f0f0f;
-  border: 1px solid #888;
+  background: radial-gradient(circle at 35% 30%, #d0d0d0, #555);
+  border: 1px solid #333;
   flex-shrink: 0;
 }
 
+/* ---- Board body (cream, like a real prop) ---- */
 .cl-board {
-  position: absolute;
-  top: clamp(94px, 15vh, 144px);
-  left: 0; right: 0; bottom: 0;
-  padding: clamp(1.5rem, 4vh, 3rem) clamp(1.5rem, 5vw, 5rem);
+  position: relative;
+  width: 100%;
+  padding: clamp(0.7rem, 1.8vh, 1.5rem) clamp(0.8rem, 2.2vw, 1.8rem) clamp(1rem, 2.5vh, 2rem);
   display: flex;
   flex-direction: column;
-  gap: clamp(1.5rem, 3vh, 2.5rem);
-  background: #0f0f0f;
+  gap: clamp(0.6rem, 1.5vh, 1.2rem);
+  background: linear-gradient(158deg, #f3f0d8 0%, #ece8c8 55%, #e4e0be 100%);
+  border: 2px solid #1a1a1a;
+  border-top: none;
   overflow: hidden;
+}
+
+/* Top metal edge */
+.cl-board::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -2px; right: -2px;
+  height: 11px;
+  background: linear-gradient(180deg, #555 0%, #1e1e1e 100%);
+  z-index: 1;
+}
+
+/* Top-left lighting sheen */
+.cl-board::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(148deg, rgba(255,255,255,0.14) 0%, transparent 45%);
+  pointer-events: none;
 }
 
 .cl-brand {
   font-family: var(--ff-display);
-  font-size: clamp(1.8rem, 4vw, 3.2rem);
+  font-size: clamp(1.3rem, 2.6vw, 2.4rem);
   letter-spacing: 0.08em;
-  color: var(--white);
-  border-bottom: 1px solid rgba(255,255,255,0.12);
-  padding-bottom: 0.75rem;
+  color: #1a1a1a;
+  border-bottom: 2px solid #1a1a1a;
+  padding-bottom: clamp(0.3rem, 0.8vh, 0.6rem);
+  padding-top: 0.55rem;
 }
 .cl-brand em { color: var(--red); font-style: normal; }
 
@@ -284,29 +382,29 @@ img, svg { display: block; }
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 1px;
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.08);
+  background: #a0a090;
+  border: 1px solid #a0a090;
   flex-shrink: 0;
 }
 .cl-cell {
-  background: #0f0f0f;
-  padding: clamp(0.7rem, 1.5vh, 1.1rem) clamp(0.75rem, 1.5vw, 1.25rem);
-  display: flex; flex-direction: column; gap: 6px;
+  background: linear-gradient(158deg, #f1edd6, #e8e4c4);
+  padding: clamp(0.35rem, 1vh, 0.75rem) clamp(0.4rem, 1vw, 0.9rem);
+  display: flex; flex-direction: column; gap: 4px;
 }
 .cl-cell.wide { grid-column: span 2; }
 
 .cl-key {
-  font-size: clamp(0.52rem, 1vw, 0.62rem);
-  letter-spacing: 0.25em;
-  color: var(--text-dim);
+  font-size: clamp(0.44rem, 0.82vw, 0.54rem);
+  letter-spacing: 0.22em;
+  color: #5a5a4a;
   text-transform: uppercase;
   font-family: var(--ff-body);
 }
 .cl-val {
   font-family: var(--ff-display);
-  font-size: clamp(1rem, 2.5vw, 1.8rem);
-  letter-spacing: 0.06em;
-  color: var(--white);
+  font-size: clamp(0.82rem, 1.8vw, 1.45rem);
+  letter-spacing: 0.05em;
+  color: #111;
   line-height: 1;
 }
 
@@ -314,15 +412,15 @@ img, svg { display: block; }
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
-  margin-top: auto;
-  font-size: 0.58rem;
-  letter-spacing: 0.4em;
-  color: var(--text-dim);
+  gap: 0.4rem;
+  margin-top: 0.2rem;
+  font-size: 0.52rem;
+  letter-spacing: 0.38em;
+  color: #666;
   text-transform: uppercase;
   animation: clHint 2s ease-in-out infinite;
 }
-.cl-hint svg { width: 20px; height: 20px; opacity: 0.5; }
+.cl-hint svg { width: 18px; height: 18px; opacity: 0.45; color: #444; }
 @keyframes clHint { 0%,100%{opacity:0.5;transform:translateY(0)} 50%{opacity:1;transform:translateY(4px)} }
 
 /* =====================================================
@@ -642,10 +740,10 @@ img, svg { display: block; }
 #film-cursor {
   position: fixed;
   top: 0; left: 0;
-  width: 46px; height: 92px;
+  width: 86px; height: 24px;
   pointer-events: none;
   z-index: 99999;
-  transform: translate(-23px, -22px);
+  transform: translate(-43px, -12px);
   opacity: 0;
   transition: opacity 0.3s;
 }
@@ -663,6 +761,7 @@ img, svg { display: block; }
   .h-nav-counter { display: none; }
   .cl-grid { grid-template-columns: repeat(2, 1fr); }
   .cl-cell.wide { grid-column: span 2; }
+  .cl-prop { width: 88vw; }
 }
 
 @media (max-width: 480px) {
