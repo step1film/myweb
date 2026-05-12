@@ -20,8 +20,7 @@
       ctx.putImageData(img, 0, 0);
       requestAnimationFrame(tick);
     }
-    resize();
-    tick();
+    resize(); tick();
     addEventListener('resize', resize);
   }
 
@@ -34,24 +33,15 @@
       const len = (sr * 0.18) | 0;
       const buf = ctx.createBuffer(1, len, sr);
       const data = buf.getChannelData(0);
-      for (let i = 0; i < len; i++) {
-        const t = i / sr;
-        data[i] = (Math.random() * 2 - 1) * Math.exp(-t * 85) * 1.2;
-      }
-      const noise = ctx.createBufferSource();
-      noise.buffer = buf;
-      const hp = ctx.createBiquadFilter();
-      hp.type = 'highpass'; hp.frequency.value = 900;
-      const bp = ctx.createBiquadFilter();
-      bp.type = 'peaking'; bp.frequency.value = 2400; bp.Q.value = 1.2; bp.gain.value = 8;
+      for (let i = 0; i < len; i++) { const t = i / sr; data[i] = (Math.random() * 2 - 1) * Math.exp(-t * 85) * 1.2; }
+      const noise = ctx.createBufferSource(); noise.buffer = buf;
+      const hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 900;
+      const bp = ctx.createBiquadFilter(); bp.type = 'peaking'; bp.frequency.value = 2400; bp.Q.value = 1.2; bp.gain.value = 8;
       const noiseGain = ctx.createGain();
       noiseGain.gain.setValueAtTime(1.4, ctx.currentTime);
       noiseGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.18);
-      noise.connect(hp); hp.connect(bp); bp.connect(noiseGain);
-      noiseGain.connect(ctx.destination);
-      noise.start(ctx.currentTime);
-      const osc = ctx.createOscillator();
-      osc.type = 'sine';
+      noise.connect(hp); hp.connect(bp); bp.connect(noiseGain); noiseGain.connect(ctx.destination); noise.start(ctx.currentTime);
+      const osc = ctx.createOscillator(); osc.type = 'sine';
       osc.frequency.setValueAtTime(200, ctx.currentTime);
       osc.frequency.exponentialRampToValueAtTime(55, ctx.currentTime + 0.045);
       const oscGain = ctx.createGain();
@@ -59,7 +49,7 @@
       oscGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.06);
       osc.connect(oscGain); oscGain.connect(ctx.destination);
       osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.07);
-    } catch (e) { /* audio blocked */ }
+    } catch (e) {}
   }
 
   function initLoader(onDone) {
@@ -86,9 +76,10 @@
     }, 900);
   }
 
-  function initScrollDriver() {
+  function initScrollDriver(propDelay) {
     const clapper  = document.getElementById('clapper');
     const arm      = document.getElementById('clapperArm');
+    const prop     = document.querySelector('.cl-prop');
     const hWrapper = document.getElementById('h-wrapper');
     const panels   = Array.from(document.querySelectorAll('.h-panel'));
     const dots     = Array.from(document.querySelectorAll('.h-dot'));
@@ -98,6 +89,9 @@
     const nextBtn  = document.getElementById('hNext');
     if (!clapper || !arm || !hWrapper || !panels.length) return;
 
+    let propReady = false;
+    setTimeout(() => { propReady = true; }, propDelay || 1700);
+
     const LABELS = ['Films', 'About', 'Awards', 'Contact'];
     const TOTAL  = panels.length;
     function fmt(n) { return String(n + 1).padStart(2, '0'); }
@@ -106,14 +100,19 @@
     function onScroll() {
       const vh = window.innerHeight;
       const sy = window.scrollY;
-
       const clapP = sy / vh;
+
       if (clapP < 1) {
         clapper.style.display = '';
         clapper.style.opacity = '1';
-        const armP     = Math.min(1, clapP / 0.25);
-        const armAngle = -16 * (1 - armP);
-        arm.style.transform = `rotate(${armAngle}deg)`;
+        const armP = Math.min(1, clapP / 0.25);
+        arm.style.transform = `rotate(${-16 * (1 - armP)}deg)`;
+        if (propReady && prop) {
+          const t  = Math.min(1, clapP / 0.35);
+          const sc = 1 + t * 0.07;
+          const ro = -1.8 * (1 - t);
+          prop.style.transform = `translate(-50%, -48%) scale(${sc}) rotate(${ro}deg)`;
+        }
         if (armP >= 1 && !clapFired) { clapFired = true; playClap(); }
         if (armP < 0.85) clapFired = false;
         const slideP = Math.max(0, Math.min(1, (clapP - 0.3) / 0.7));
@@ -149,7 +148,6 @@
     }
 
     dots.forEach(dot => dot.addEventListener('click', () => goToPanel(parseInt(dot.dataset.i, 10))));
-
     if (prevBtn) prevBtn.addEventListener('click', () => {
       const cur = Math.min(TOTAL-1, Math.max(0, Math.floor(-hWrapper.getBoundingClientRect().top / window.innerHeight)));
       goToPanel(cur - 1);
@@ -158,7 +156,6 @@
       const cur = Math.min(TOTAL-1, Math.max(0, Math.floor(-hWrapper.getBoundingClientRect().top / window.innerHeight)));
       goToPanel(cur + 1);
     });
-
     window.addEventListener('keydown', e => {
       const scrolledIn = -hWrapper.getBoundingClientRect().top;
       if (scrolledIn < -100 || scrolledIn > (TOTAL-1)*window.innerHeight + 200) return;
@@ -166,7 +163,6 @@
       if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); goToPanel(cur+1); }
       if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   { e.preventDefault(); goToPanel(cur-1); }
     });
-
     const sticky = document.getElementById('h-sticky');
     if (sticky) {
       let tx = 0, ty = 0;
@@ -211,7 +207,7 @@
       clapper.style.opacity = '1';
       clapper.classList.add('is-active');
       document.body.classList.remove('is-loading');
-      initScrollDriver();
+      initScrollDriver(1700);
     });
   });
 

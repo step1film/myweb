@@ -12,43 +12,11 @@
 </head>
 <body class="is-loading">
 
-  <!-- Static stage background — completely separate from clapper -->
-  <div id="stage-bg" aria-hidden="true"></div>
-
-  <!-- =====================================================
-       FILM GRAIN
-  ====================================================== -->
-  <canvas id="grain" aria-hidden="true"></canvas>
-
-  <!-- =====================================================
-       01. COUNTDOWN LOADER
-  ====================================================== -->
-  <div id="loader" aria-hidden="true">
-    <div class="ld-holes top"  aria-hidden="true"></div>
-    <div class="ld-holes bot"  aria-hidden="true"></div>
-    <div class="ld-scan"       aria-hidden="true"></div>
-    <div class="ld-body">
-      <div class="ld-ring-wrap">
-        <svg class="ld-svg" viewBox="0 0 120 120" fill="none">
-          <circle class="ld-track"    cx="60" cy="60" r="50"/>
-          <circle class="ld-progress" cx="60" cy="60" r="50"/>
-          <line   class="ld-ch" x1="20" y1="60"  x2="100" y2="60"/>
-          <line   class="ld-cv" x1="60" y1="20"  x2="60"  y2="100"/>
-          <circle class="ld-dot" cx="60" cy="60" r="4"/>
-        </svg>
-        <span class="ld-num" id="ldNum">5</span>
-      </div>
-      <p class="ld-label">ROLL &nbsp;·&nbsp; SOUND &nbsp;·&nbsp; ACTION</p>
-    </div>
-  </div>
-
-  <!-- =====================================================
-       02. CLAPPERBOARD
-  ====================================================== -->
   <div id="clapper" aria-hidden="true">
+    <!-- Stage background — lives inside clapper so it scrolls away with it -->
+    <div id="stage-bg" aria-hidden="true"></div>
     <div class="cl-scene">
 
-      <!-- Stage spotlights from above -->
       <div class="cl-lights" aria-hidden="true">
         <div class="cl-spot cl-spot--1"></div>
         <div class="cl-spot cl-spot--2"></div>
@@ -56,11 +24,7 @@
         <div class="cl-spot cl-spot--4"></div>
         <div class="cl-spot cl-spot--5"></div>
       </div>
-
-      <!-- Warm floor glow -->
       <div class="cl-floor-glow" aria-hidden="true"></div>
-
-      <!-- Animated haze / smoke -->
       <div class="cl-haze" aria-hidden="true">
         <div class="cl-smoke cl-smoke--1"></div>
         <div class="cl-smoke cl-smoke--2"></div>
@@ -68,10 +32,7 @@
         <div class="cl-smoke cl-smoke--4"></div>
       </div>
 
-      <!-- Clapperboard prop (centered) -->
       <div class="cl-prop">
-
-        <!-- Arm — pivots at bottom-left (hinge) -->
         <div class="cl-arm" id="clapperArm">
           <div class="cl-arm-stripes" aria-hidden="true"></div>
           <div class="cl-arm-info">
@@ -79,105 +40,67 @@
             <span>AYMAN HASSDO</span>
           </div>
         </div>
-
-        <!-- Hinge -->
         <div class="cl-hinge" aria-hidden="true">
-          <span class="cl-hinge-dot left"  aria-hidden="true"></span>
+          <span class="cl-hinge-dot left" aria-hidden="true"></span>
           <span class="cl-hinge-dot right" aria-hidden="true"></span>
         </div>
-
-        <!-- Board body -->
         <div class="cl-board">
           <div class="cl-brand">STEP<em>1</em>FILM</div>
-
           <div class="cl-grid">
-            <div class="cl-cell wide">
-              <span class="cl-key">PRODUCTION</span>
-              <span class="cl-val">STEP1FILM STUDIOS</span>
-            </div>
-            <div class="cl-cell">
-              <span class="cl-key">ROLL</span>
-              <span class="cl-val">01</span>
-            </div>
-
-            <div class="cl-cell wide">
-              <span class="cl-key">DIRECTOR</span>
-              <span class="cl-val">AYMAN HASSDO</span>
-            </div>
-            <div class="cl-cell">
-              <span class="cl-key">CAMERA / DP</span>
-              <span class="cl-val">AYMAN HASSDO</span>
-            </div>
-
-            <div class="cl-cell">
-              <span class="cl-key">SCENE</span>
-              <span class="cl-val">001</span>
-            </div>
-            <div class="cl-cell">
-              <span class="cl-key">TAKE</span>
-              <span class="cl-val">01</span>
-            </div>
-            <div class="cl-cell">
-              <span class="cl-key">DATE</span>
-              <span class="cl-val">2026</span>
-            </div>
-            <div class="cl-cell">
-              <span class="cl-key">DAY / NIGHT</span>
-              <span class="cl-val">NIGHT</span>
-            </div>
+            <div class="cl-cell wide"><span class="cl-key">PRODUCTION</span><span class="cl-val">STEP1FILM STUDIOS</span></div>
+            <div class="cl-cell"><span class="cl-key">ROLL</span><span class="cl-val">01</span></div>
+            <div class="cl-cell wide"><span class="cl-key">DIRECTOR</span><span class="cl-val">AYMAN HASSDO</span></div>
+            <div class="cl-cell"><span class="cl-key">CAMERA / DP</span><span class="cl-val">AYMAN HASSDO</span></div>
+            <div class="cl-cell"><span class="cl-key">SCENE</span><span class="cl-val">001</span></div>
+            <div class="cl-cell"><span class="cl-key">TAKE</span><span class="cl-val">01</span></div>
+            <div class="cl-cell"><span class="cl-key">DATE</span><span class="cl-val">2026</span></div>
+            <div class="cl-cell"><span class="cl-key">DAY / NIGHT</span><span class="cl-val">NIGHT</span></div>
           </div>
-
           <div class="cl-hint">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-              <line x1="12" y1="4" x2="12" y2="20"/>
-              <polyline points="6,14 12,20 18,14"/>
-            </svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><line x1="12" y1="4" x2="12" y2="20"/><polyline points="6,14 12,20 18,14"/></svg>
             SCROLL TO BEGIN
           </div>
-        </div><!-- .cl-board -->
+        </div>
+      </div>
 
-      </div><!-- .cl-prop -->
-
-    </div><!-- .cl-scene -->
+    </div>
   </div><!-- #clapper -->
 
-  <!-- =====================================================
-       03. SITE PAGE
-  ====================================================== -->
-  <div id="page">
+  <canvas id="grain" aria-hidden="true"></canvas>
 
-    <!-- Logo mark — floating, no nav bar -->
-    <div id="logo-mark">
-      <a href="#hero" class="logo-text">STEP<span>1</span>FILM</a>
+  <div id="loader" aria-hidden="true">
+    <div class="ld-holes top" aria-hidden="true"></div>
+    <div class="ld-holes bot" aria-hidden="true"></div>
+    <div class="ld-scan" aria-hidden="true"></div>
+    <div class="ld-body">
+      <div class="ld-ring-wrap">
+        <svg class="ld-svg" viewBox="0 0 120 120" fill="none">
+          <circle class="ld-track" cx="60" cy="60" r="50"/>
+          <circle class="ld-progress" cx="60" cy="60" r="50"/>
+          <line class="ld-ch" x1="20" y1="60" x2="100" y2="60"/>
+          <line class="ld-cv" x1="60" y1="20" x2="60" y2="100"/>
+          <circle class="ld-dot" cx="60" cy="60" r="4"/>
+        </svg>
+        <span class="ld-num" id="ldNum">5</span>
+      </div>
+      <p class="ld-label">ROLL  ·  SOUND  ·  ACTION</p>
     </div>
+  </div>
 
-    <!-- Clapper scroll zone — 100vh spacer that drives the clapperboard -->
+  <div id="page">
+    <div id="logo-mark"><a href="#hero" class="logo-text">STEP<span>1</span>FILM</a></div>
     <div id="clapper-zone" aria-hidden="true"></div>
 
-    <!-- HERO — fullscreen video -->
     <section id="hero">
       <div class="hero-video-wrap">
-        <iframe
-          id="ytFrame"
-          src="https://www.youtube.com/embed/VIDEO_ID?autoplay=1&mute=1&loop=1&playlist=VIDEO_ID&controls=0&rel=0&showinfo=0&playsinline=1&modestbranding=1"
-          frameborder="0"
-          allow="autoplay; fullscreen; picture-in-picture"
-          allowfullscreen
-          title="Showreel"
-        ></iframe>
+        <iframe id="ytFrame" src="https://www.youtube.com/embed/VIDEO_ID?autoplay=1&mute=1&loop=1&playlist=VIDEO_ID&controls=0&rel=0&showinfo=0&playsinline=1&modestbranding=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="Showreel"></iframe>
         <div class="hero-overlay" aria-hidden="true"></div>
       </div>
       <div class="hero-content">
-        <p class="hero-eyebrow">Director &nbsp;·&nbsp; Cinematographer</p>
-        <h1 class="hero-name">
-          <span>AYMAN</span>
-          <span>HASSDO</span>
-        </h1>
+        <p class="hero-eyebrow">Director  ·  Cinematographer</p>
+        <h1 class="hero-name"><span>AYMAN</span><span>HASSDO</span></h1>
         <a href="#films" class="hero-down" aria-label="Enter site">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-            <line x1="12" y1="4" x2="12" y2="20"/>
-            <polyline points="6,14 12,20 18,14"/>
-          </svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><line x1="12" y1="4" x2="12" y2="20"/><polyline points="6,14 12,20 18,14"/></svg>
         </a>
       </div>
     </section>
@@ -186,193 +109,64 @@
       <div id="h-sticky">
         <div id="h-track">
 
-          <!-- PANEL 01 — FILMS -->
           <section class="h-panel" id="films" data-panel="0">
             <div class="panel-inner">
-              <div class="panel-head">
-                <span class="panel-num">01</span>
-                <h2 class="panel-title">Selected<br>Works</h2>
-              </div>
+              <div class="panel-head"><span class="panel-num">01</span><h2 class="panel-title">Selected<br>Works</h2></div>
               <div class="films-list">
-                <article class="film-item">
-                  <div class="film-num">001</div>
-                  <div class="film-body">
-                    <div class="film-meta">
-                      <span class="film-year">2024</span>
-                      <span class="film-type">Feature</span>
-                      <span class="film-fest">Sundance</span>
-                    </div>
-                    <h3 class="film-title">La Última Luz</h3>
-                    <p class="film-syn">Memory and loss against the vanishing landscapes of Patagonia.</p>
-                  </div>
-                </article>
-                <article class="film-item">
-                  <div class="film-num">002</div>
-                  <div class="film-body">
-                    <div class="film-meta">
-                      <span class="film-year">2022</span>
-                      <span class="film-type">Short</span>
-                      <span class="film-fest">Cannes</span>
-                    </div>
-                    <h3 class="film-title">Before the Tide</h3>
-                    <p class="film-syn">One last night in a city about to be swallowed by the sea.</p>
-                  </div>
-                </article>
-                <article class="film-item">
-                  <div class="film-num">003</div>
-                  <div class="film-body">
-                    <div class="film-meta">
-                      <span class="film-year">2021</span>
-                      <span class="film-type">Doc</span>
-                      <span class="film-fest">IDFA</span>
-                    </div>
-                    <h3 class="film-title">Manos del Tiempo</h3>
-                    <p class="film-syn">Artisans keeping ancient craft traditions alive in the Andean highlands.</p>
-                  </div>
-                </article>
-                <article class="film-item">
-                  <div class="film-num">004</div>
-                  <div class="film-body">
-                    <div class="film-meta">
-                      <span class="film-year">2019</span>
-                      <span class="film-type">Feature</span>
-                      <span class="film-fest">Berlin</span>
-                    </div>
-                    <h3 class="film-title">El Camino Largo</h3>
-                    <p class="film-syn">A father crossing a continent to find his estranged daughter.</p>
-                  </div>
-                </article>
-                <article class="film-item">
-                  <div class="film-num">005</div>
-                  <div class="film-body">
-                    <div class="film-meta">
-                      <span class="film-year">2017</span>
-                      <span class="film-type">Short</span>
-                      <span class="film-fest">Venice</span>
-                    </div>
-                    <h3 class="film-title">Señales</h3>
-                    <p class="film-syn">Signals from a ship that sank thirty years ago.</p>
-                  </div>
-                </article>
+                <article class="film-item"><div class="film-num">001</div><div class="film-body"><div class="film-meta"><span class="film-year">2024</span><span class="film-type">Feature</span><span class="film-fest">Sundance</span></div><h3 class="film-title">La Última Luz</h3><p class="film-syn">Memory and loss against the vanishing landscapes of Patagonia.</p></div></article>
+                <article class="film-item"><div class="film-num">002</div><div class="film-body"><div class="film-meta"><span class="film-year">2022</span><span class="film-type">Short</span><span class="film-fest">Cannes</span></div><h3 class="film-title">Before the Tide</h3><p class="film-syn">One last night in a city about to be swallowed by the sea.</p></div></article>
+                <article class="film-item"><div class="film-num">003</div><div class="film-body"><div class="film-meta"><span class="film-year">2021</span><span class="film-type">Doc</span><span class="film-fest">IDFA</span></div><h3 class="film-title">Manos del Tiempo</h3><p class="film-syn">Artisans keeping ancient craft traditions alive in the Andean highlands.</p></div></article>
+                <article class="film-item"><div class="film-num">004</div><div class="film-body"><div class="film-meta"><span class="film-year">2019</span><span class="film-type">Feature</span><span class="film-fest">Berlin</span></div><h3 class="film-title">El Camino Largo</h3><p class="film-syn">A father crossing a continent to find his estranged daughter.</p></div></article>
+                <article class="film-item"><div class="film-num">005</div><div class="film-body"><div class="film-meta"><span class="film-year">2017</span><span class="film-type">Short</span><span class="film-fest">Venice</span></div><h3 class="film-title">Señales</h3><p class="film-syn">Signals from a ship that sank thirty years ago.</p></div></article>
               </div>
             </div>
           </section>
 
-          <!-- PANEL 02 — ABOUT -->
           <section class="h-panel" id="about" data-panel="1">
             <div class="panel-inner panel-inner--about">
-              <div class="about-portrait">
-                <div class="portrait-box">
-                  <svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg">
-                    <rect width="300" height="400" fill="#111"/>
-                    <circle cx="150" cy="145" r="64" fill="#1e1e1e"/>
-                    <ellipse cx="150" cy="320" rx="100" ry="80" fill="#1e1e1e"/>
-                  </svg>
-                </div>
-              </div>
+              <div class="about-portrait"><div class="portrait-box"><svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg"><rect width="300" height="400" fill="#111"/><circle cx="150" cy="145" r="64" fill="#1e1e1e"/><ellipse cx="150" cy="320" rx="100" ry="80" fill="#1e1e1e"/></svg></div></div>
               <div class="about-content">
-                <div class="panel-head">
-                  <span class="panel-num">02</span>
-                  <h2 class="panel-title">The<br>Filmmaker</h2>
-                </div>
-                <p class="about-lead">
-                  Ayman Hassdo is an award-winning director and cinematographer whose work explores memory, identity, and the places where they collide.
-                </p>
-                <p class="about-body">
-                  With a rigorous visual language and a deeply humanist perspective, Hassdo has spent over a decade making films that refuse easy answers — drawing on landscape as character and silence as language.
-                </p>
+                <div class="panel-head"><span class="panel-num">02</span><h2 class="panel-title">The<br>Filmmaker</h2></div>
+                <p class="about-lead">Ayman Hassdo is an award-winning director and cinematographer whose work explores memory, identity, and the places where they collide.</p>
+                <p class="about-body">With a rigorous visual language and a deeply humanist perspective, Hassdo has spent over a decade making films that refuse easy answers — drawing on landscape as character and silence as language.</p>
                 <div class="about-nums">
-                  <div class="about-num-item">
-                    <span class="annum">14</span>
-                    <span class="anlabel">Awards</span>
-                  </div>
-                  <div class="about-num-item">
-                    <span class="annum">80+</span>
-                    <span class="anlabel">Festivals</span>
-                  </div>
-                  <div class="about-num-item">
-                    <span class="annum">40+</span>
-                    <span class="anlabel">Countries</span>
-                  </div>
+                  <div class="about-num-item"><span class="annum">14</span><span class="anlabel">Awards</span></div>
+                  <div class="about-num-item"><span class="annum">80+</span><span class="anlabel">Festivals</span></div>
+                  <div class="about-num-item"><span class="annum">40+</span><span class="anlabel">Countries</span></div>
                 </div>
               </div>
             </div>
           </section>
 
-          <!-- PANEL 03 — AWARDS -->
           <section class="h-panel" id="awards" data-panel="2">
             <div class="panel-inner">
-              <div class="panel-head">
-                <span class="panel-num">03</span>
-                <h2 class="panel-title">Recognition</h2>
-              </div>
+              <div class="panel-head"><span class="panel-num">03</span><h2 class="panel-title">Recognition</h2></div>
               <div class="awards-list">
-                <div class="award-row">
-                  <span class="aw-year">2024</span>
-                  <span class="aw-name">Sundance Film Festival</span>
-                  <span class="aw-detail">Official Selection — La Última Luz</span>
-                </div>
-                <div class="award-row">
-                  <span class="aw-year">2022</span>
-                  <span class="aw-name">Cannes Film Festival</span>
-                  <span class="aw-detail">Palme d'Or Nominee — Before the Tide</span>
-                </div>
-                <div class="award-row">
-                  <span class="aw-year">2021</span>
-                  <span class="aw-name">IDFA Amsterdam</span>
-                  <span class="aw-detail">Best Documentary — Manos del Tiempo</span>
-                </div>
-                <div class="award-row">
-                  <span class="aw-year">2019</span>
-                  <span class="aw-name">Berlin Film Festival</span>
-                  <span class="aw-detail">Silver Bear — El Camino Largo</span>
-                </div>
-                <div class="award-row">
-                  <span class="aw-year">2017</span>
-                  <span class="aw-name">Venice Film Festival</span>
-                  <span class="aw-detail">Orizzonti Award — Señales</span>
-                </div>
+                <div class="award-row"><span class="aw-year">2024</span><span class="aw-name">Sundance Film Festival</span><span class="aw-detail">Official Selection — La Última Luz</span></div>
+                <div class="award-row"><span class="aw-year">2022</span><span class="aw-name">Cannes Film Festival</span><span class="aw-detail">Palme d'Or Nominee — Before the Tide</span></div>
+                <div class="award-row"><span class="aw-year">2021</span><span class="aw-name">IDFA Amsterdam</span><span class="aw-detail">Best Documentary — Manos del Tiempo</span></div>
+                <div class="award-row"><span class="aw-year">2019</span><span class="aw-name">Berlin Film Festival</span><span class="aw-detail">Silver Bear — El Camino Largo</span></div>
+                <div class="award-row"><span class="aw-year">2017</span><span class="aw-name">Venice Film Festival</span><span class="aw-detail">Orizzonti Award — Señales</span></div>
               </div>
             </div>
           </section>
 
-          <!-- PANEL 04 — CONTACT -->
           <section class="h-panel" id="contact" data-panel="3">
             <div class="panel-inner panel-inner--contact">
-              <div class="panel-head">
-                <span class="panel-num">04</span>
-                <h2 class="panel-title">Let's<br>Work</h2>
-              </div>
+              <div class="panel-head"><span class="panel-num">04</span><h2 class="panel-title">Let's<br>Work</h2></div>
               <p class="contact-intro">Available for feature film projects, commercial direction, and collaborative ventures.</p>
               <div class="contact-list">
-                <a href="mailto:ayman@step1film.com" class="contact-row">
-                  <span class="cr-label">Email</span>
-                  <span class="cr-val">ayman@step1film.com</span>
-                </a>
-                <a href="#" class="contact-row">
-                  <span class="cr-label">Instagram</span>
-                  <span class="cr-val">@step1film</span>
-                </a>
-                <a href="#" class="contact-row">
-                  <span class="cr-label">IMDb</span>
-                  <span class="cr-val">Ayman Hassdo</span>
-                </a>
-                <a href="#" class="contact-row">
-                  <span class="cr-label">Representation</span>
-                  <span class="cr-val">Available on request</span>
-                </a>
+                <a href="mailto:ayman@step1film.com" class="contact-row"><span class="cr-label">Email</span><span class="cr-val">ayman@step1film.com</span></a>
+                <a href="#" class="contact-row"><span class="cr-label">Instagram</span><span class="cr-val">@step1film</span></a>
+                <a href="#" class="contact-row"><span class="cr-label">IMDb</span><span class="cr-val">Ayman Hassdo</span></a>
+                <a href="#" class="contact-row"><span class="cr-label">Representation</span><span class="cr-val">Available on request</span></a>
               </div>
             </div>
           </section>
 
-        </div><!-- #h-track -->
-
+        </div>
         <nav id="h-nav" aria-label="Section navigation">
-          <div class="h-nav-counter">
-            <span id="hCur">01</span>
-            <span class="h-nav-sep">/</span>
-            <span>04</span>
-          </div>
+          <div class="h-nav-counter"><span id="hCur">01</span><span class="h-nav-sep">/</span><span>04</span></div>
           <div class="h-nav-dots">
             <button class="h-dot active" data-i="0" aria-label="Films"></button>
             <button class="h-dot" data-i="1" aria-label="About"></button>
@@ -381,22 +175,12 @@
           </div>
           <span class="h-nav-label" id="hLabel">Films</span>
         </nav>
-
         <div class="h-arrows" aria-hidden="true">
-          <button class="h-arrow h-arrow--prev" id="hPrev" aria-label="Previous">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
-              <polyline points="15,18 9,12 15,6"/>
-            </svg>
-          </button>
-          <button class="h-arrow h-arrow--next" id="hNext" aria-label="Next">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
-              <polyline points="9,6 15,12 9,18"/>
-            </svg>
-          </button>
+          <button class="h-arrow h-arrow--prev" id="hPrev" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><polyline points="15,18 9,12 15,6"/></svg></button>
+          <button class="h-arrow h-arrow--next" id="hNext" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><polyline points="9,6 15,12 9,18"/></svg></button>
         </div>
-
-      </div><!-- #h-sticky -->
-    </div><!-- #h-wrapper -->
+      </div>
+    </div>
 
     <footer id="footer">
       <div class="foot-inner">
@@ -404,8 +188,7 @@
         <span class="foot-copy">© 2026 Ayman Hassdo</span>
       </div>
     </footer>
-
-  </div><!-- #page -->
+  </div>
 
   <script src="main.js"></script>
 </body>
