@@ -199,31 +199,26 @@
   }
 
   /* --------------------------------------------------
-     FILM REEL CURSOR — matches reference icon (Q-shape reel)
+     FILM REEL CURSOR — Q-shape reel, GPU-composited via translate3d
   -------------------------------------------------- */
   function initCursor() {
     if (window.matchMedia('(hover:none)').matches) return;
     const el = document.createElement('div');
     el.id = 'film-cursor';
     el.innerHTML = `<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <!-- Outer disc -->
       <circle cx="22" cy="22" r="22" fill="#f0f0f0"/>
-      <!-- 3 large holes (top, left, bottom — right hole replaced by strip cutout) -->
       <circle cx="22" cy="7.5"  r="7.2" fill="#0c0c0c"/>
       <circle cx="7.5"  cy="22" r="7.2" fill="#0c0c0c"/>
       <circle cx="36.5" cy="22" r="7.2" fill="#0c0c0c"/>
       <circle cx="22" cy="36.5" r="7.2" fill="#0c0c0c"/>
-      <!-- Center hub -->
       <circle cx="22" cy="22" r="3.8" fill="#0c0c0c"/>
-      <!-- Film strip Q-tail (bottom-right protrusion) -->
       <rect x="38" y="39" width="10" height="7" fill="#f0f0f0" rx="3.5"/>
     </svg>`;
     document.body.appendChild(el);
     window.addEventListener('mousemove', e => {
-      el.style.left = e.clientX + 'px';
-      el.style.top  = e.clientY + 'px';
-      el.classList.add('visible');
-    });
+      el.style.transform = `translate3d(${e.clientX - 22}px,${e.clientY - 22}px,0)`;
+      if (!el.classList.contains('visible')) el.classList.add('visible');
+    }, { passive: true });
   }
 
   /* --------------------------------------------------
@@ -234,8 +229,8 @@
     initCursor();
     const clapper = document.getElementById('clapper');
     initLoader(() => {
-      /* Show clapper immediately — scroll drives everything from here */
       clapper.style.opacity = '1';
+      clapper.classList.add('is-active');
       document.body.classList.remove('is-loading');
       initScrollDriver();
     });
