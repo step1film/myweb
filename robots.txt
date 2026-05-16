@@ -1,0 +1,5 @@
+# STEP1FILM — Ayman Hassdo
+User-agent: *
+Allow: /
+
+Sitemap: https://step1film.com/sitemap.xml
